@@ -1,3 +1,11 @@
+@font-face {
+    font-family: 'Elliott';
+    src: url('../assets/fonts/ELRIOTT2.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -5,8 +13,16 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    font-family: 'Elliott', sans-serif;
 }
 
-canvas{
+canvas {
     background-color: #000;
+}
+
+h1{
+    font-family: "Elliott", sans-serif;
+    color: #b87202;
+    margin-top: 20px;
+    font-size: 64px;
 }
