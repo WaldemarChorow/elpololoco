@@ -4,12 +4,8 @@ let keyboard = new Keyboard();
 
 function init() {
     canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard, level1);
-        
-    console.log('My Character is', world.character);
-    
+    world = new World(canvas, keyboard, level1);    
 }
 
 window.addEventListener('keydown', (e) => {
-    console.log(event);
 });

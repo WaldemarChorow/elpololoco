@@ -63,11 +63,11 @@ class Endboss extends MovableObject {
             } else if (this.currentState === 'hurt') {
                 this.playAnimation(this.IMAGES_HURT);
             }
-        }, 200);
+        }, 300);
 
         setTimeout(() => {
             this.currentState = 'hurt';
             this.currentImage = 0;
-        }, 3000);
+        }, 5000);
     }
 }   
