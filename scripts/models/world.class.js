@@ -1,55 +1,20 @@
 class World{
     character = new Character();
-    enemies = [
-        new Chicken(),
-        new Chicken(),
-        new Chicken()
-    ];
-     clouds = [
-        new Cloud('assets/img/5_background/layers/4_clouds/1.png'),
-        new Cloud('assets/img/5_background/layers/4_clouds/2.png')
-    ];
-    layers = [
-        new Layer('assets/img/5_background/layers/3_third_layer/2.png', -719),
-        new Layer('assets/img/5_background/layers/2_second_layer/2.png', -719), 
-        new Layer('assets/img/5_background/layers/1_first_layer/2.png', -719),
-
-        new Layer('assets/img/5_background/layers/3_third_layer/1.png', 0), 
-        new Layer('assets/img/5_background/layers/2_second_layer/1.png', 0),  
-        new Layer('assets/img/5_background/layers/1_first_layer/1.png', 0),
-
-        new Layer('assets/img/5_background/layers/3_third_layer/2.png', 719),
-        new Layer('assets/img/5_background/layers/2_second_layer/2.png', 719),  
-        new Layer('assets/img/5_background/layers/1_first_layer/2.png', 719),
-     
-        new Layer('assets/img/5_background/layers/3_third_layer/1.png', 719*2),
-        new Layer('assets/img/5_background/layers/2_second_layer/1.png', 719*2),
-        new Layer('assets/img/5_background/layers/1_first_layer/1.png', 719*2),
-
-        new Layer('assets/img/5_background/layers/3_third_layer/2.png', 719*3),
-        new Layer('assets/img/5_background/layers/2_second_layer/2.png', 719*3),
-        new Layer('assets/img/5_background/layers/1_first_layer/2.png', 719*3),
-
-        
-    ];
-    
-    background = [
-        new Background('assets/img/5_background/layers/air.png', -719),
-        new Background('assets/img/5_background/layers/air.png', 0),
-        new Background('assets/img/5_background/layers/air.png', 719),
-        new Background('assets/img/5_background/layers/air.png', 719*2),
-        new Background('assets/img/5_background/layers/air.png', 719*3),
-    ];
-    
+    level = level1;
     canvas;
     ctx;
     keyboard;
     camera_x = 0;
 
-    constructor(canvas, keyboard) {
+    constructor(canvas, keyboard, level) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.level = level;
+        this.enemies = level.enemies;
+        this.clouds = level.clouds;
+        this.layers = level.layers;
+        this.background = level.background;
         this.draw();
         this.setWorld();
     }
@@ -62,11 +27,11 @@ class World{
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.translate(this.camera_x, 0);
-        this.addObejectsToMap(this.background);
-        this.addObejectsToMap(this.layers);
-        this.addObejectsToMap(this.clouds);
+        this.addObejectsToMap(this.level.background);
+        this.addObejectsToMap(this.level.layers);
+        this.addObejectsToMap(this.level.clouds);
         this.addToMap(this.character);
-        this.addObejectsToMap(this.enemies);
+        this.addObejectsToMap(this.level.enemies);
         this.ctx.translate(-this.camera_x, 0);    
 
         requestAnimationFrame(() => this.draw());
