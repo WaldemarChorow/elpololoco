@@ -26,3 +26,15 @@ h1{
     margin-top: 20px;
     font-size: 64px;
 }
+
+.arrowLeft, .arrowRight {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    padding: 10px 20px;
+    background-color: #b87202;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
