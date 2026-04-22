@@ -4,6 +4,13 @@ class Character extends MovableObject {
     y = 80;
     speed = 2.5;
 
+    offset = {
+        top: 150,
+        left: 50,
+        right: 50,
+        bottom: 30
+    };
+
     IMAGES_WALKING = [
         'assets/img/2_character_pepe/2_walk/W-21.png',
         'assets/img/2_character_pepe/2_walk/W-22.png',
@@ -26,12 +33,30 @@ class Character extends MovableObject {
     
     ];
 
+    IMAGES_HURTS = [
+        'assets/img/2_character_pepe/4_hurt/H-41.png',
+        'assets/img/2_character_pepe/4_hurt/H-42.png',
+        'assets/img/2_character_pepe/4_hurt/H-43.png',
+    ];
+
+    IMAGES_DEAD = [
+        'assets/img/2_character_pepe/5_dead/D-51.png',
+        'assets/img/2_character_pepe/5_dead/D-52.png',
+        'assets/img/2_character_pepe/5_dead/D-53.png',
+        'assets/img/2_character_pepe/5_dead/D-54.png',
+        'assets/img/2_character_pepe/5_dead/D-55.png',
+        'assets/img/2_character_pepe/5_dead/D-56.png',
+        'assets/img/2_character_pepe/5_dead/D-57.png',
+    ];
+
     world;
 
     constructor() {
             super().loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
             this.loadImages(this.IMAGES_WALKING);
             this.loadImages(this.IMAGES_JUMPING);
+            this.loadImages(this.IMAGES_HURTS);
+            this.loadImages(this.IMAGES_DEAD);
             this.applyGravity();
             this.animate();
     }
@@ -60,6 +85,11 @@ class Character extends MovableObject {
         }, 1000 / 60);
 
         setInterval(() => {
+            if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD);
+            } else if (this.isHurt()) {
+                this.playAnimation(this.IMAGES_HURTS);
+            } else
             if(this.isAboveGround()) {
                 this.playAnimation(this.IMAGES_JUMPING); 
             } else{
@@ -67,7 +97,7 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGES_WALKING);
                 }
             }
-        }, 200);
+        }, 1000 / 10);
     }
 
     updateCamera() {
