@@ -8,4 +8,9 @@ function init() {
 }
 
 window.addEventListener('keydown', (e) => {
+    keyboard.KEYDOWN(e);
+});
+
+window.addEventListener('keyup', (e) => {
+    keyboard.KEYUP(e);
 });

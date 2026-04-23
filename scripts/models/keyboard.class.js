@@ -4,6 +4,7 @@ class Keyboard {
     UP = false;
     DOWN = false;
     SPACE = false;
+    D = false;
     
     constructor() {
         window.addEventListener('keydown', (e) => {
@@ -30,6 +31,9 @@ class Keyboard {
         if (e.key === ' ') {
             this.SPACE = true;
         }
+        if (e.key === 'd' || e.key === 'D') {
+            this.D = true;
+        }
     }
 
     KEYUP(e) {
@@ -47,6 +51,9 @@ class Keyboard {
         }
         if (e.key === ' ') {
             this.SPACE = false;
+        }
+        if (e.key === 'd' || e.key === 'D') {
+            this.D = false;
         }
     }
 }

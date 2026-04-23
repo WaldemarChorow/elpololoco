@@ -16,8 +16,12 @@ class MovableObject extends DrawableObjects {
     }
 
     isAboveGround() {
+        if (this instanceof ThrowableObject) {
+            return this.y < 360;
+        } else {
         return this.y < 80;
         }
+    }
 
     loadImage(path) {
         this.img = new Image();
@@ -78,5 +82,6 @@ class MovableObject extends DrawableObjects {
     isDead() {
         return this.energy === 0;
     }
+
 
 }
