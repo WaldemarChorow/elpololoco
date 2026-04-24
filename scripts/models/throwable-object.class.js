@@ -1,9 +1,11 @@
 class ThrowableObject extends MovableObject {
     width = 70;
     height = 70;
-    y = 350;
     speedY = 5;
     gravity = 0.5;
+    state = 'flying'; // 'flying' | 'on_ground'
+
+    GROUND_Y = 350; // matches Chicken y
 
     offset = {
         top: 0,
@@ -21,7 +23,7 @@ class ThrowableObject extends MovableObject {
 
     IMAGES_BOTTLE_ON_GROUND = [
         'assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
-        'assets/img/6_salsa_bottle/2_salsa_bottle_on_ground.png',    
+        'assets/img/6_salsa_bottle/2_salsa_bottle_on_ground.png',
     ];
 
     IMAGES_SPLASH = [
@@ -41,18 +43,34 @@ class ThrowableObject extends MovableObject {
         this.loadImages(this.IMAGES_BOTTLE_ON_GROUND);
         this.loadImages(this.IMAGES_SPLASH);
         this.throw();
+        this.animate();
     }
 
     throw() {
-        this.speedY = 10;
+        this.speedY = 5;
         this.applyGravity();
-        setInterval(() => {
-            if (this.speedY > 0) {
-                this.speedY -= this.gravity;
-            }
-            this.y -= this.speedY;
-            this.x += 45; // Adjust the horizontal speed as needed
-        }, 1000 / 25); // Update at 60 frames per second
+        this.moveInterval = setInterval(() => {
+            this.x += 40;
+        }, 1000 / 20);
     }
 
+    animate() {
+        setInterval(() => {
+            if (this.state === 'flying') {
+                if (this.y >= this.GROUND_Y) {
+                    this.land();
+                } else {
+                    this.playAnimation(this.IMAGES_ROTATING);
+                }
+            }
+        }, 1000 / 20);
+    }
+
+    land() {
+        this.state = 'on_ground';
+        this.y = this.GROUND_Y;
+        this.speedY = 0;
+        clearInterval(this.moveInterval);
+        this.img = this.imageCache[this.IMAGES_BOTTLE_ON_GROUND[0]];
+    }
 }

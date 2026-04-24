@@ -49,7 +49,34 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/5_dead/D-57.png',
     ];
 
+    IMAGES_IDLE_SHORT = [
+        'assets/img/2_character_pepe/1_idle/idle/I-1.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-2.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-3.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-4.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-5.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-6.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-7.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-8.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-9.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-10.png'
+    ];
+
+    IMAGE_IDLE_LONG = [
+        'assets/img/2_character_pepe/1_idle/long_idle/I-11.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-12.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-13.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-14.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-15.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-16.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-17.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-18.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-19.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-20.png'
+    ];
+
     world;
+    lastMove = new Date().getTime();
 
     constructor() {
             super().loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
@@ -57,6 +84,8 @@ class Character extends MovableObject {
             this.loadImages(this.IMAGES_JUMPING);
             this.loadImages(this.IMAGES_HURTS);
             this.loadImages(this.IMAGES_DEAD);
+            this.loadImages(this.IMAGES_IDLE_SHORT);
+            this.loadImages(this.IMAGE_IDLE_LONG);
             this.applyGravity();
             this.animate();
     }
@@ -68,15 +97,18 @@ class Character extends MovableObject {
         setInterval(() => {
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x ) {
                 this.moveRight();
-                this.otherDirection = false;                
+                this.otherDirection = false;
+                this.lastMove = new Date().getTime();
             }
             if (this.world.keyboard.LEFT && this.x > 0) {
                 this.moveLeft();
                 this.otherDirection = true;
+                this.lastMove = new Date().getTime();
             }
 
             if (this.world.keyboard.SPACE && !this.isAboveGround()) {
                 this.jump();
+                this.lastMove = new Date().getTime();
             } else if (!this.world.keyboard.SPACE && this.isAboveGround() && this.speedY > 5) {
                 this.speedY = 5;
             }
@@ -89,15 +121,33 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGES_DEAD);
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURTS);
-            } else
-            if(this.isAboveGround()) {
-                this.playAnimation(this.IMAGES_JUMPING); 
-            } else{
-                if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+            } else if (this.isAboveGround()) {
+                this.playAnimation(this.IMAGES_JUMPING);
+            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                 this.playAnimation(this.IMAGES_WALKING);
+            }
+        }, 1000 / 10); // Walking-Geschwindigkeit: 10 fps
+
+        setInterval(() => {
+            if (!this.isDead() && !this.isHurt() && !this.isAboveGround() &&
+                !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT) {
+                if (this.isIdleLong()) {
+                    this.playAnimation(this.IMAGE_IDLE_LONG);
+                } else if (this.isIdle()) {
+                    this.playAnimation(this.IMAGES_IDLE_SHORT);
                 }
             }
-        }, 1000 / 10);
+        }, 1000 / 5); // Idle-Geschwindigkeit: 5 fps
+    }
+
+    isIdle() {
+        let timepassed = (new Date().getTime() - this.lastMove) / 1000;
+        return timepassed >= 3 && timepassed < 6;
+    }
+
+    isIdleLong() {
+        let timepassed = (new Date().getTime() - this.lastMove) / 1000;
+        return timepassed >= 6;
     }
 
     updateCamera() {

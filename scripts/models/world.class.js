@@ -6,7 +6,9 @@ class World{
     keyboard;
     camera_x = 0;
     statusBar = new StatusBar();
+    bossHealthBar = new BossHealthBar();
     bottleStatusBar = new BottleStatusBar();
+    coinScore = new CoinScore();
     therowableObjects = [];
 
     constructor(canvas, keyboard, level) {
@@ -49,6 +51,9 @@ class World{
                 this.character.hit();
                 this.statusBar.setHealth(this.character.energy);
             }
+            if (enemy instanceof Endboss && this.character.x > enemy.x - 600) {
+                this.bossHealthBar.visible = true;
+            }
         });
     }   
 
@@ -63,7 +68,9 @@ class World{
         this.addObejectsToMap(this.therowableObjects);
         this.ctx.translate(-this.camera_x, 0);
         this.addToMap(this.statusBar);
+        if (this.bossHealthBar.visible) this.addToMap(this.bossHealthBar);
         this.addToMap(this.bottleStatusBar);
+        this.addToMap(this.coinScore);
         requestAnimationFrame(() => this.draw());
     }
 
