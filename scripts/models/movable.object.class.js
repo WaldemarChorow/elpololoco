@@ -37,12 +37,24 @@ class MovableObject extends DrawableObjects {
     }
 
     isColliding(mo) {
+        const a = this.collisionBox();
+        const b = mo.collisionBox();
         return (
-            this.x + this.width > mo.x &&
-            this.x < mo.x + mo.width &&
-            this.y + this.height > mo.y &&
-            this.y < mo.y + mo.height
+            a.x + a.width > b.x &&
+            a.x < b.x + b.width &&
+            a.y + a.height > b.y &&
+            a.y < b.y + b.height
         );
+    }
+
+    collisionBox() {
+        const o = this.offset || { top: 0, left: 0, right: 0, bottom: 0 };
+        return {
+            x: this.x + o.left,
+            y: this.y + o.top,
+            width: this.width - o.left - o.right,
+            height: this.height - o.top - o.bottom,
+        };
     }
 
     moveRight() {

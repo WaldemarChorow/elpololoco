@@ -55,19 +55,4 @@ class ThrowableObject extends MovableObject {
         }, 1000 / 25); // Update at 60 frames per second
     }
 
-    setInterval(() => {
-            if (this.rotate()) {
-                this.playAnimation(this.IMAGES_ROTATING);
-            } else if (this.()) {
-                this.playAnimation(this.IMAGES_HURTS);
-            } else
-            if(this.isAboveGround()) {
-                this.playAnimation(this.IMAGES_JUMPING); 
-            } else{
-                if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                this.playAnimation(this.IMAGES_WALKING);
-                }
-            }
-        }, 1000 / 10);
-
 }

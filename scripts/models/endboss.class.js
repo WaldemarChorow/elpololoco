@@ -51,7 +51,7 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_DEAD);
-        this.x = 2000;
+        this.x = 6000;
         this.currentState = 'alert';
         this.animate();
     }
@@ -68,6 +68,6 @@ class Endboss extends MovableObject {
         setTimeout(() => {
             this.currentState = 'hurt';
             this.currentImage = 0;
-        }, 5000);
+        }, 1000);
     }
 }   
