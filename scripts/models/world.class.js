@@ -18,7 +18,6 @@ class World{
         this.level = level;
         this.soundCoin = AudioManager.create('assets/sounds/collectibles/collectSound.wav');
         this.soundBottleCollect = AudioManager.create('assets/sounds/collectibles/bottleCollectSound.wav');
-        this.soundBoss = AudioManager.create('assets/sounds/endboss/endbossApproach.wav');
         this.enemies = level.enemies;
         this.clouds = level.clouds;
         this.layers = level.layers;
@@ -80,7 +79,10 @@ class World{
             if (enemy instanceof Endboss && this.character.x > enemy.x - 600 && !this.bossHealthBar.visible) {
                 this.bossHealthBar.visible = true;
                 enemy.appear();
-                this.soundBoss.play();
+                AudioManager.startBossFight();
+            }
+            if (enemy instanceof Endboss && enemy.isDead()) {
+                AudioManager.stopBossMusic();
             }
         });
         this.level.coins.forEach((coin) => {

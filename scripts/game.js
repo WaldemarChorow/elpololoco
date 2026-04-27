@@ -6,6 +6,7 @@ function init() {
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard, level1);
     new Audio('assets/sounds/game/gameStart.mp3').play();
+    AudioManager.initMusic();
 }
 
 window.addEventListener('keydown', (e) => {
