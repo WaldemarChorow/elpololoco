@@ -14,6 +14,6 @@ class BottleStatusBar extends DrawableObjects {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
         ctx.font = '56px Elliott, sans-serif';
         ctx.fillStyle = 'white';
-        ctx.fillText(`${this.count}`, this.x + this.width + 1, this.y + 45);
+        ctx.fillText(`${this.count}/5`, this.x + this.width + 1, this.y + 45);
     }
 }

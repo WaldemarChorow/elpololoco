@@ -44,6 +44,13 @@ class Endboss extends MovableObject {
         'assets/img/4_enemie_boss_chicken/5_dead/G26.png',
     ];
 
+    visible = false;
+
+    // Zeiten in ms — hier anpassen
+    ALERT_DURATION = 3000;   // wie lange die Alert-Animation läuft
+    ALERT_FPS = 150;         // Geschwindigkeit der Alert-Animation
+    WALK_FPS = 200;          // Geschwindigkeit der Walk-Animation
+
     constructor() {
         super().loadImage('assets/img/4_enemie_boss_chicken/2_alert/G5.png');
         this.loadImages(this.IMAGES_ALERT);
@@ -52,22 +59,33 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_DEAD);
         this.x = 6000;
+        this.currentState = 'waiting';
+    }
+
+    appear() {
+        this.visible = true;
         this.currentState = 'alert';
+        this.currentImage = 0;
         this.animate();
     }
 
     animate() {
-        setInterval(() => {
+        const alertInterval = setInterval(() => {
             if (this.currentState === 'alert') {
                 this.playAnimation(this.IMAGES_ALERT);
-            } else if (this.currentState === 'hurt') {
-                this.playAnimation(this.IMAGES_HURT);
             }
-        }, 300);
+        }, this.ALERT_FPS);
 
         setTimeout(() => {
-            this.currentState = 'hurt';
+            clearInterval(alertInterval);
+            this.currentState = 'walking';
             this.currentImage = 0;
-        }, 1000);
+            setInterval(() => {
+                if (this.currentState === 'walking') {
+                    this.playAnimation(this.IMAGES_WALKING);
+                    this.moveLeft();
+                }
+            }, this.WALK_FPS);
+        }, this.ALERT_DURATION);
     }
 }   

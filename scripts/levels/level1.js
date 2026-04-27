@@ -56,8 +56,33 @@ function createEnemies() {
     return enemies;
 }
 
+function createCoins() {
+    const coins = [];
+    const positions = [
+        [400, 100], [800, 150], [1200, 200], 
+        [1600, 50], [2000, 150], [2400, 200],  
+        [3000, 150], [3500, 200], [4000, 100],
+        [4400, 50], [4800, 200], [5200, 150],
+    ];
+    positions.forEach(([x, y]) => coins.push(new Coin(x, y)));
+    return coins;
+}
+
+function createBottles() {
+    const bottles = [];
+    const positions = [
+        [600, 340], [2200, 340],   
+        [3200, 340], [4400, 350],
+        [5400, 350],
+    ];
+    positions.forEach(([x, y], i) => bottles.push(new Bottle(x, y, i)));
+    return bottles;
+}
+
 const level1 = new Level(
     createEnemies(),
+    createCoins(),
+    createBottles(),
     createClouds(),
     createLayers(),
     createBackground()

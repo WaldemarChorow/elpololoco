@@ -35,10 +35,11 @@ class ThrowableObject extends MovableObject {
         'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png',
     ];
 
-    constructor(x, y) {
+    constructor(x, y, otherDirection) {
         super().loadImage('assets/img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
         this.x = x;
         this.y = y;
+        this.otherDirection = otherDirection;
         this.loadImages(this.IMAGES_ROTATING);
         this.loadImages(this.IMAGES_BOTTLE_ON_GROUND);
         this.loadImages(this.IMAGES_SPLASH);
@@ -49,28 +50,36 @@ class ThrowableObject extends MovableObject {
     throw() {
         this.speedY = 5;
         this.applyGravity();
+        const direction = this.otherDirection ? -40 : 40;
         this.moveInterval = setInterval(() => {
-            this.x += 40;
+            this.x += direction;
         }, 1000 / 20);
     }
 
     animate() {
-        setInterval(() => {
+        this.animateInterval = setInterval(() => {
             if (this.state === 'flying') {
                 if (this.y >= this.GROUND_Y) {
-                    this.land();
+                    this.splash();
                 } else {
                     this.playAnimation(this.IMAGES_ROTATING);
                 }
+            } else if (this.state === 'splashing') {
+                if (this.currentImage >= this.splashStartFrame + this.IMAGES_SPLASH.length) {
+                    this.state = 'done';
+                    clearInterval(this.animateInterval);
+                } else {
+                    this.playAnimation(this.IMAGES_SPLASH);
+                }
             }
-        }, 1000 / 20);
+        }, 1000 / 12);
     }
 
-    land() {
-        this.state = 'on_ground';
-        this.y = this.GROUND_Y;
-        this.speedY = 0;
+    splash() {
+        AudioManager.create('assets/sounds/throwable/bottleBreak.mp3').play();
+        this.state = 'splashing';
+        this.splashStartFrame = this.currentImage;
         clearInterval(this.moveInterval);
-        this.img = this.imageCache[this.IMAGES_BOTTLE_ON_GROUND[0]];
+        this.speedY = 0;
     }
 }

@@ -1,7 +1,7 @@
 class CoinScore extends DrawableObjects {
     x = 300;
     y = 10;
-    width = 50;
+    width = 60;
     height = 60;
     count = 0;
 
