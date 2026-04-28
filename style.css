@@ -1,24 +1,102 @@
 @font-face {
     font-family: 'Elliott';
-    src: url('../assets/fonts/ELRIOTT2.TTF') format('truetype');
+    src: url('assets/fonts/ELRIOTT2.TTF') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
 
 body {
-    margin: 0;
-    padding: 0;
+    margin: 0 auto;
+}
+
+body {
+    background-color: #B28D66;
+    margin: 0 auto;
+}
+#Wrapper {
+    max-width:1200px;
+    width:95%;
+    background-image: url(assets/img/5_background/gameBackgroundIMG.png);
+    background-repeat: no-repeat scroll;
+    background-position: center top;
+    height: 100vh;
+    position: relative;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-left: auto;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+#Wrapper #Banner {
+    width: 100%;
+    height: 350px;
+    background-image: url(../img/animated-gif-header.gif);
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+#Wrapper #Content {
+    width: 75%;
+    margin: 0 auto;
+}
+#Wrapper #MainNav {
+    background-image: url(../img/nav_bar.png);
+    width: 100%;
+    height: 75px;
+    margin-top: -20px;
+}
+#Wrapper #MainNav ul {
+    margin-right: 100px;
+
+}
+
+#Wrapper #MainNav ul li {
+    float: right;
+    margin-top: 15px;
+    padding-right: 21px;
+}
+
+#game-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Elliott', sans-serif;
+    align-items: flex-start;
+    position: relative;
 }
 
 canvas {
     background-color: #000;
     display: block;
+}
+
+#action-icons {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    padding: 8px 0;
+    align-self: flex-end;
+}
+
+#action-icons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+#action-icons img {
+    width: 36px;
+    height: 36px;
+    display: block;
+    transition: transform 0.1s;
+}
+
+#action-icons button:hover img {
+    transform: scale(1.15);
 }
 
 h1{

@@ -1,7 +1,10 @@
 class AudioManager {
     static volume = 0.3;
-    static musicVolume = 0.4; 
-    static bossMusicVolume = 0.5; 
+    static musicVolume = 0.4;
+    static bossMusicVolume = 0.5;
+    static _savedVolume = 0.3;
+    static _savedMusicVolume = 0.4;
+    static _savedBossMusicVolume = 0.5;
     static sounds = [];
 
     static bgMusic = new Audio('assets/sounds/game/gameBackgoundMusic.mp3');
@@ -53,18 +56,26 @@ class AudioManager {
 
     static setVolume(value) {
         AudioManager.volume = value;
-        AudioManager.sounds.forEach(s => {
-            if (s._customVolume === null) s.volume = value;
-        });
+        AudioManager.sounds.forEach(s => s.volume = value);
     }
 
     static mute() {
-        AudioManager.setVolume(0);
-        AudioManager.setMusicVolume(0);
+        AudioManager._savedVolume = AudioManager.volume;
+        AudioManager._savedMusicVolume = AudioManager.musicVolume;
+        AudioManager._savedBossMusicVolume = AudioManager.bossMusicVolume;
+        AudioManager.sounds.forEach(s => s.volume = 0);
+        AudioManager.bgMusic.volume = 0;
+        AudioManager.bossMusic.volume = 0;
+        AudioManager.bossApproach.volume = 0;
     }
 
     static unmute() {
-        AudioManager.setVolume(1);
-        AudioManager.setMusicVolume(AudioManager.musicVolume);
+        AudioManager.sounds.forEach(s => s.volume = AudioManager._savedVolume);
+        AudioManager.bgMusic.volume = AudioManager._savedMusicVolume;
+        AudioManager.bossMusic.volume = AudioManager._savedBossMusicVolume;
+        AudioManager.bossApproach.volume = AudioManager._savedBossMusicVolume;
+        if (AudioManager.musicStarted && AudioManager.bgMusic.paused) {
+            AudioManager.bgMusic.play();
+        }
     }
 }

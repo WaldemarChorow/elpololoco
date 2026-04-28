@@ -25,17 +25,28 @@
     <script src="scripts/models/keyboard.class.js"></script> 
     <script src="scripts/models/level.class.js"></script>
     <script src="scripts/levels/level1.js"></script>
-    <script src="scripts/models/throwable-object.class.js"></script>     
+    <script src="scripts/models/throwable-object.class.js"></script>
+    <script src="scripts/models/action-icons.class.js"></script>
     <script src="scripts/game.js"></script>
     
 </head>
-<body onload="init()">
-    <!-- <h1>El Polo Loco</h1> -->
+<body onload="init()" id="Wrapper">
+    <h1>El Polo Loco</h1>
 
-    <canvas id="canvas" width="720" height="480">
-        <button id="arrowLeft" onclick="moveLeft();"><</button>
-        <button id="arrowRight" onclick="moveRight();">></button>
-    </canvas>
+    <div id="game-container">
+        <div id="action-icons">
+            <button id="btn-sound" onclick="ActionIcons.toggleSound()">
+                <img id="icon-sound" src="assets/img/10_icons/soundOnIcon.png" alt="Sound">
+            </button>
+            <button id="btn-restart" onclick="ActionIcons.restart()">
+                <img src="assets/img/10_icons/restartIcon.png" alt="Restart">
+            </button>
+        </div>
+        <canvas id="canvas" width="720" height="480">
+            <button id="arrowLeft" onclick="moveLeft();"><</button>
+            <button id="arrowRight" onclick="moveRight();">></button>
+        </canvas>
+    </div>
     
 </body>
 </html>

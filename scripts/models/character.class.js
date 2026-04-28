@@ -76,10 +76,20 @@ class Character extends MovableObject {
     ];
 
     WALK_SPEED   = 130;
-    IDLE_SPEED   = 400;  
+    HURT_SPEED   = 200;
+    DEAD_SPEED   = 150;
+    IDLE_SPEED   = 400;
 
     world;
     lastMove = new Date().getTime();
+    jumpFrame = 0;
+    jumpAnimationDone = false;
+    wasAboveGround = false;
+    hurtFrame = 0;
+    hurtAnimationDone = false;
+    wasHurt = false;
+    deadFrame = 0;
+    deadAnimationDone = false;
 
     constructor() {
             super().loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
@@ -103,6 +113,11 @@ class Character extends MovableObject {
         this.rightBoundary = 100;
 
         setInterval(() => {
+            if (this.isDead()) {
+                this.soundRun.pause();
+                this.updateCamera();
+                return;
+            }
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight();
                 this.otherDirection = false;
@@ -115,6 +130,8 @@ class Character extends MovableObject {
             }
             if (this.world.keyboard.SPACE && !this.isAboveGround()) {
                 this.jump();
+                this.jumpFrame = 0;
+                this.jumpAnimationDone = false;
                 this.soundJump.play();
                 this.lastMove = new Date().getTime();
             } else if (!this.world.keyboard.SPACE && this.isAboveGround() && this.speedY > 5) {
@@ -129,18 +146,74 @@ class Character extends MovableObject {
         }, 1000 / 60);
 
         setInterval(() => {
+            const aboveGround = this.isAboveGround();
+
             if (this.isDead()) {
-                this.soundDead.play();
-                this.playAnimation(this.IMAGES_DEAD);
+                // dead animation runs in its own interval
             } else if (this.isHurt()) {
-                this.soundDamage.play();
-                this.playAnimation(this.IMAGES_HURTS);
-            } else if (this.isAboveGround()) {
-                this.playAnimation(this.IMAGES_JUMPING);
-            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                this.playAnimation(this.IMAGES_WALKING);
+                // hurt animation runs in its own interval
+            } else if (aboveGround) {
+                if (!this.jumpAnimationDone) {
+                    let path = this.IMAGES_JUMPING[this.jumpFrame];
+                    this.img = this.imageCache[path];
+                    if (this.jumpFrame < this.IMAGES_JUMPING.length - 1) {
+                        this.jumpFrame++;
+                    } else {
+                        this.jumpAnimationDone = true;
+                    }
+                }
+            } else {
+                if (this.wasAboveGround) {
+                    this.img = this.imageCache['assets/img/2_character_pepe/1_idle/idle/I-1.png'];
+                    this.jumpFrame = 0;
+                    this.jumpAnimationDone = false;
+                } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                    this.playAnimation(this.IMAGES_WALKING);
+                }
             }
+
+            this.wasAboveGround = aboveGround;
         },this.WALK_SPEED);
+
+        setInterval(() => {
+            const hurt = this.isHurt();
+            if (!this.isDead() && hurt) {
+                if (!this.wasHurt) {
+                    this.hurtFrame = 0;
+                    this.hurtAnimationDone = false;
+                    this.soundDamage.play();
+                }
+                if (!this.hurtAnimationDone) {
+                    let path = this.IMAGES_HURTS[this.hurtFrame];
+                    this.img = this.imageCache[path];
+                    if (this.hurtFrame < this.IMAGES_HURTS.length - 1) {
+                        this.hurtFrame++;
+                    } else {
+                        this.hurtAnimationDone = true;
+                        this.img = this.imageCache['assets/img/2_character_pepe/1_idle/idle/I-1.png'];
+                    }
+                }
+            }
+            this.wasHurt = hurt;
+        }, this.HURT_SPEED);
+
+        setInterval(() => {
+            if (this.isDead()) {
+                if (!this.deadAnimationDone) {
+                    this.soundDead.play();
+                    let path = this.IMAGES_DEAD[this.deadFrame];
+                    this.img = this.imageCache[path];
+                    if (this.deadFrame < this.IMAGES_DEAD.length - 1) {
+                        this.deadFrame++;
+                    } else {
+                        this.deadAnimationDone = true;
+                    }
+                }
+            } else {
+                this.deadFrame = 0;
+                this.deadAnimationDone = false;
+            }
+        }, this.DEAD_SPEED);
 
         setInterval(() => {
             if (!this.isDead() && !this.isHurt() && !this.isAboveGround() &&
