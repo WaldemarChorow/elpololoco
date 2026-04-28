@@ -11,6 +11,11 @@ function init() {
 
 window.addEventListener('keydown', (e) => {
     keyboard.KEYDOWN(e);
+    AudioManager.initMusic();
+});
+
+window.addEventListener('click', () => {
+    AudioManager.initMusic();
 });
 
 window.addEventListener('keyup', (e) => {

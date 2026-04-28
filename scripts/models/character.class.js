@@ -75,16 +75,19 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/1_idle/long_idle/I-20.png'
     ];
 
+    WALK_SPEED   = 130;
+    IDLE_SPEED   = 400;  
+
     world;
     lastMove = new Date().getTime();
 
     constructor() {
-            super().loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
-            this.soundRun = AudioManager.create('assets/sounds/character/characterRun.mp3');
-            this.soundJump = AudioManager.create('assets/sounds/character/characterJump.wav');
-            this.soundDamage = AudioManager.create('assets/sounds/character/characterDamage.mp3');
-            this.soundDead = AudioManager.create('assets/sounds/character/characterDead.wav');
-            this.soundSnoring = AudioManager.create('assets/sounds/character/characterSnoring.mp3');
+            super().loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
+            this.soundRun    = AudioManager.create('assets/sounds/character/characterRun.mp3',    0.1);
+            this.soundJump   = AudioManager.create('assets/sounds/character/characterJump.wav',   0.4);
+            this.soundDamage = AudioManager.create('assets/sounds/character/characterDamage.mp3', 0.5);
+            this.soundDead   = AudioManager.create('assets/sounds/character/characterDead.wav',   0.5);
+            this.soundSnoring= AudioManager.create('assets/sounds/character/characterSnoring.mp3',0.3);
             this.loadImages(this.IMAGES_WALKING);
             this.loadImages(this.IMAGES_JUMPING);
             this.loadImages(this.IMAGES_HURTS);
@@ -137,7 +140,7 @@ class Character extends MovableObject {
             } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                 this.playAnimation(this.IMAGES_WALKING);
             }
-        }, 1000 / 10);
+        },this.WALK_SPEED);
 
         setInterval(() => {
             if (!this.isDead() && !this.isHurt() && !this.isAboveGround() &&
@@ -152,7 +155,7 @@ class Character extends MovableObject {
             } else {
                 this.soundSnoring.pause();
             }
-        }, 1000 / 5);
+        },this.IDLE_SPEED);
     }
 
     isIdle() {

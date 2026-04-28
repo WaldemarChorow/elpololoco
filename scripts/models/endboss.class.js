@@ -46,10 +46,16 @@ class Endboss extends MovableObject {
 
     visible = false;
 
-    // Zeiten in ms — hier anpassen
-    ALERT_DURATION = 3000;   // wie lange die Alert-Animation läuft
-    ALERT_FPS = 150;         // Geschwindigkeit der Alert-Animation
-    WALK_FPS = 200;          // Geschwindigkeit der Walk-Animation
+    offset = {
+        top: 60,
+        left: 50,
+        right: 40,
+        bottom: 10
+    };
+
+    ALERT_DURATION = 3000; 
+    ALERT_FPS = 150;        
+    WALK_FPS = 200;          
 
     constructor() {
         super().loadImage('assets/img/4_enemie_boss_chicken/2_alert/G5.png');

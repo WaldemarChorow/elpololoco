@@ -1,7 +1,7 @@
 class AudioManager {
-    static volume = 0.3;        // Soundeffekte
-    static musicVolume = 0.1;  // Hintergrundmusik
-    static bossMusicVolume = 0.5; // Boss-Fight-Musik
+    static volume = 0.3;
+    static musicVolume = 0.4; 
+    static bossMusicVolume = 0.5; 
     static sounds = [];
 
     static bgMusic = new Audio('assets/sounds/game/gameBackgoundMusic.mp3');
@@ -9,6 +9,8 @@ class AudioManager {
     static bossMusic = new Audio('assets/sounds/game/bossFightMusic.mp3');
 
     static initMusic() {
+        if (AudioManager.musicStarted) return;
+        AudioManager.musicStarted = true;
         AudioManager.bgMusic.loop = true;
         AudioManager.bgMusic.volume = AudioManager.musicVolume;
         AudioManager.bossMusic.loop = true;
@@ -41,16 +43,19 @@ class AudioManager {
         AudioManager.bossApproach.volume = value;
     }
 
-    static create(src) {
+    static create(src, volume = null) {
         const audio = new Audio(src);
-        audio.volume = AudioManager.volume;
+        audio.volume = volume !== null ? volume : AudioManager.volume;
+        audio._customVolume = volume !== null ? volume : null;
         AudioManager.sounds.push(audio);
         return audio;
     }
 
     static setVolume(value) {
         AudioManager.volume = value;
-        AudioManager.sounds.forEach(s => s.volume = value);
+        AudioManager.sounds.forEach(s => {
+            if (s._customVolume === null) s.volume = value;
+        });
     }
 
     static mute() {

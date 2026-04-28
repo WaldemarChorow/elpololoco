@@ -45,7 +45,7 @@ class ChickenSmall extends MovableObject {
     }
 
     die() {
-        AudioManager.create('assets/sounds/chicken/chickenDead2.mp3').play();
+        AudioManager.create('assets/sounds/chicken/chickenDead2.mp3', 0.8).play();
         this.energy = 0;
         setTimeout(() => this.remove = true, 1000);
     }
