@@ -129,6 +129,7 @@ class Endboss extends MovableObject {
                         this.deadFrame++;
                     } else {
                         this.deadAnimationDone = true;
+                        this.startFalling();
                     }
                 }
             } else if (this.currentState === 'hurt') {
@@ -150,6 +151,29 @@ class Endboss extends MovableObject {
     hit() {
         this.energy = Math.max(0, this.energy - 10);
         this.lastHit = new Date().getTime();
+    }
+
+    startFalling() {
+        const fall = setInterval(() => {
+            if (window.gamePaused) return;
+            this.y += 8;
+            if (this.y > 600) {
+                clearInterval(fall);
+                this.visible = false;
+                this.onDeathComplete();
+            }
+        }, 1000 / 60);
+    }
+
+    onDeathComplete() {
+        AudioManager.stopBossMusic();
+        new Audio('assets/sounds/game/winMusic.mp3').play().catch(() => {});
+        setTimeout(() => {
+            window.gamePaused = true;
+            if (world) world.paused = true;
+            document.getElementById('game-toolbar').style.display = 'none';
+            document.getElementById('you-win-screen').classList.add('visible');
+        }, 1000);
     }
 
     triggerHurt() {

@@ -116,6 +116,10 @@ class World{
         });
     }   
 
+    gameOverShown = false;
+    gameOverTriggered = false;
+    GAME_OVER_DELAY = 2000; // ms bis Game Over Screen erscheint — hier anpassen
+
     draw() {
         if (this.paused) {
             requestAnimationFrame(() => this.draw());
@@ -126,16 +130,33 @@ class World{
         this.addObejectsToMap(this.level.background);
         this.addObejectsToMap(this.level.layers);
         this.addObejectsToMap(this.level.clouds);
-        this.addToMap(this.character);
-        this.addObejectsToMap(this.level.enemies.filter(e => !(e instanceof Endboss) || e.visible));
-        this.addObejectsToMap(this.level.coins.filter(c => !c.collected));
-        this.addObejectsToMap(this.level.bottles.filter(b => !b.collected));
-        this.addObejectsToMap(this.therowableObjects);
-        this.ctx.translate(-this.camera_x, 0);
-        this.addToMap(this.statusBar);
-        if (this.bossHealthBar.visible) this.addToMap(this.bossHealthBar);
-        this.addToMap(this.bottleStatusBar);
-        this.addToMap(this.coinScore);
+
+        if (!this.gameOverShown) {
+            this.addToMap(this.character);
+            this.addObejectsToMap(this.level.enemies.filter(e => !(e instanceof Endboss) || e.visible));
+            this.addObejectsToMap(this.level.coins.filter(c => !c.collected));
+            this.addObejectsToMap(this.level.bottles.filter(b => !b.collected));
+            this.addObejectsToMap(this.therowableObjects);
+            this.ctx.translate(-this.camera_x, 0);
+            this.addToMap(this.statusBar);
+            if (this.bossHealthBar.visible) this.addToMap(this.bossHealthBar);
+            this.addToMap(this.bottleStatusBar);
+            this.addToMap(this.coinScore);
+        } else {
+            this.ctx.translate(-this.camera_x, 0);
+        }
+
+        if (this.character.isDead() && !this.gameOverTriggered) {
+            this.gameOverTriggered = true;
+            AudioManager.mute();
+            new Audio('assets/sounds/game/gameOver.mp3').play().catch(() => {});
+            setTimeout(() => {
+                this.gameOverShown = true;
+                document.getElementById('game-toolbar').style.display = 'none';
+                document.getElementById('game-over-screen').classList.add('visible');
+            }, this.GAME_OVER_DELAY);
+        }
+
         requestAnimationFrame(() => this.draw());
     }
 
