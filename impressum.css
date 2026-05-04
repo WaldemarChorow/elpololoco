@@ -1,0 +1,89 @@
+#impressum-main {
+    width: 100%;
+    max-width: 800px;
+    padding: 40px 32px 60px;
+    box-sizing: border-box;
+    flex: 1;
+}
+
+#impressum-title {
+    font-family: 'Elliott', sans-serif;
+    color: #b87202;
+    font-size: 52px;
+    margin-top: 32px;
+    margin-bottom: 40px;
+    text-shadow: 0 4px 16px rgba(0,0,0,0.8), 0 0 32px rgba(184,114,2,0.4);
+    border-bottom: 2px solid #b87202;
+    padding-bottom: 16px;
+}
+
+.imp-section {
+    background: rgba(58, 26, 0, 0.75);
+    border: 1px solid rgba(184, 114, 2, 0.4);
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 12px rgba(184,114,2,0.08);
+    backdrop-filter: blur(4px);
+}
+
+.imp-section h2 {
+    font-family: 'Elliott', sans-serif;
+    color: #b87202;
+    font-size: 22px;
+    margin-top: 0;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+}
+
+.imp-section p {
+    color: #f5deb3;
+    font-family: sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+    margin: 0 0 10px;
+}
+
+.imp-section p:last-child {
+    margin-bottom: 0;
+}
+
+.imp-section a {
+    color: #b87202;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.imp-section a:hover {
+    color: #f5deb3;
+}
+
+.imp-back {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.imp-btn {
+    display: inline-block;
+    font-family: 'Elliott', sans-serif;
+    color: #f5deb3;
+    background: #3a1a00;
+    border: 2px solid #b87202;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 18px;
+    text-decoration: none;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 12px rgba(184,114,2,0.2);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.imp-btn:hover {
+    background: #b87202;
+    color: #3a1a00;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.6), 0 0 20px rgba(184,114,2,0.4);
+}
+
+#nav-brand {
+    text-decoration: none;
+}

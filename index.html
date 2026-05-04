@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El Polo Loco</title>
+    <link rel="icon" href="assets/img/10_icons/favIcon.png" type="image/png">
     <link rel="stylesheet" href="style.css">
     <script src="scripts/models/audio-manager.class.js"></script>
     <script src="scripts/models/drawable-objects.class.js"></script>
@@ -31,22 +32,69 @@
     
 </head>
 <body onload="init()" id="Wrapper">
+
+    <!-- About Us Modal -->
+    <div id="about-modal">
+        <div id="about-content">
+            <button id="about-close" onclick="document.getElementById('about-modal').classList.remove('open')">&times;</button>
+            <h2>About Us</h2>
+            <p>El Polo Loco ist ein Jump-and-Run-Spiel das im Rahmen der <strong>Developer Akademie</strong> entstanden ist.</p>
+            <p>Entwickelt von <strong>Waldemar Chorow</strong> mit Leidenschaft für Games und sauberen Code.</p>
+        </div>
+    </div>
+
+    <div id="page-bg">
+    <nav id="navbar">
+        <div id="navbar-inner">
+            <span id="nav-brand">El Polo Loco</span>
+            <ul id="nav-links">
+                <li><a href="#" onclick="document.getElementById('about-modal').classList.add('open'); return false;">About Us</a></li>
+            </ul>
+        </div>
+    </nav>
     <h1>El Polo Loco</h1>
 
     <div id="game-container">
-        <div id="action-icons">
-            <button id="btn-sound" onclick="ActionIcons.toggleSound()">
-                <img id="icon-sound" src="assets/img/10_icons/soundOnIcon.png" alt="Sound">
-            </button>
-            <button id="btn-restart" onclick="ActionIcons.restart()">
-                <img src="assets/img/10_icons/restartIcon.png" alt="Restart">
-            </button>
+        <div id="game-toolbar">
+            <div id="action-icons-left">
+                <button id="btn-pause" onclick="ActionIcons.togglePause()">
+                    <img id="icon-pause" src="assets/img/10_icons/pauseIcon.png" alt="Pause">
+                </button>
+                <button id="btn-info" onclick="ActionIcons.toggleInfo()">
+                    <img src="assets/img/10_icons/infoIcon.png" alt="Info">
+                </button>
+            </div>
+            <div id="action-icons">
+                <button id="btn-sound" onclick="ActionIcons.toggleSound()">
+                    <img id="icon-sound" src="assets/img/10_icons/soundOnIcon.png" alt="Sound">
+                </button>
+                <button id="btn-restart" onclick="ActionIcons.restart()">
+                    <img src="assets/img/10_icons/restartIcon.png" alt="Restart">
+                </button>
+            </div>
         </div>
         <canvas id="canvas" width="720" height="480">
             <button id="arrowLeft" onclick="moveLeft();"><</button>
             <button id="arrowRight" onclick="moveRight();">></button>
         </canvas>
+        <div id="info-banner">
+            <button id="info-banner-close" onclick="ActionIcons.toggleInfo()">&times;</button>
+            <!-- <img src="assets/img/5_background/bannerControlGame.png" alt="Steuerung"> -->
+        </div>
     </div>
-    
+
+    <footer id="main-footer">
+        <div id="footer-inner">
+            <span>&copy; Copyright by Waldemar Chorow &amp; Developer Akademie</span>
+            <a href="https://github.com/WaldemarChorow" target="_blank" rel="noopener" id="github-link" aria-label="GitHub">
+                <svg id="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+            </a>
+            <a href="impressum.html" id="footer-impressum">Impressum</a>
+        </div>
+    </footer>
+    </div>
+
 </body>
 </html>

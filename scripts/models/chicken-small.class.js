@@ -25,17 +25,19 @@ class ChickenSmall extends MovableObject {
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
         this.x = x;
-        this.speed = 0.15 + Math.random() * 0.25;
+        this.speed = 0.80 + Math.random() * 0.90;
         this.animate();
     }
 
     animate() {
         setInterval(() => {
+            if (window.gamePaused) return;
             if (!this.isDead()) this.moveLeft();
             this.otherDirection = false;
         }, 1000 / 60);
 
         setInterval(() => {
+            if (window.gamePaused) return;
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
             } else {

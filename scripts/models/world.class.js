@@ -33,8 +33,11 @@ class World{
         this.character.animate();
     }
 
+    paused = false;
+
     run() {
         setInterval(() => {
+            if (this.paused) return;
             this.checkCollisions();
             this.checkThrowObjects();
             this.level.enemies = this.level.enemies.filter(e => !e.remove);
@@ -56,6 +59,10 @@ class World{
                 if (obj.state === 'flying' && obj.isColliding(enemy)) {
                     obj.splash();
                     enemy.hit();
+                    if (enemy instanceof Endboss) {
+                        enemy.triggerHurt();
+                        this.bossHealthBar.setHealth(enemy.energy);
+                    }
                     if (enemy.isDead() && enemy.die) enemy.die();
                 }
             });
@@ -102,6 +109,10 @@ class World{
     }   
 
     draw() {
+        if (this.paused) {
+            requestAnimationFrame(() => this.draw());
+            return;
+        }
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.translate(this.camera_x, 0);
         this.addObejectsToMap(this.level.background);

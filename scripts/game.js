@@ -5,17 +5,25 @@ let keyboard = new Keyboard();
 function init() {
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard, level1);
-    new Audio('assets/sounds/game/gameStart.mp3').play();
+    if (sessionStorage.getItem('audioUnlocked')) {
+        AudioManager.initMusic();
+    }
+}
+
+function startAudioOnInteraction() {
+    if (AudioManager.musicStarted) return;
+    sessionStorage.setItem('audioUnlocked', '1');
+    new Audio('assets/sounds/game/gameStart.mp3').play().catch(() => {});
     AudioManager.initMusic();
 }
 
 window.addEventListener('keydown', (e) => {
     keyboard.KEYDOWN(e);
-    AudioManager.initMusic();
+    startAudioOnInteraction();
 });
 
 window.addEventListener('click', () => {
-    AudioManager.initMusic();
+    startAudioOnInteraction();
 });
 
 window.addEventListener('keyup', (e) => {

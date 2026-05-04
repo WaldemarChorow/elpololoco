@@ -48,7 +48,14 @@ function createEnemies() {
     const spread = 400;
     let x = 1500;
     const enemies = [];
-    [Chicken, Chicken, ChickenSmall, Chicken, ChickenSmall, Chicken, ChickenSmall, ChickenSmall].forEach(Type => {
+    [Chicken, Chicken, ChickenSmall, 
+        Chicken, ChickenSmall, Chicken, 
+        ChickenSmall, ChickenSmall, Chicken,
+        Chicken, Chicken, ChickenSmall,
+        ChickenSmall, ChickenSmall, Chicken,
+        Chicken, ChickenSmall, Chicken,
+        Chicken, Chicken, ChickenSmall,
+    ].forEach(Type => {
         enemies.push(new Type(x));
         x += minDistance + Math.random() * spread;
     });

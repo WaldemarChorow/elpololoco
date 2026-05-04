@@ -19,7 +19,7 @@ class AudioManager {
         AudioManager.bossMusic.loop = true;
         AudioManager.bossMusic.volume = AudioManager.bossMusicVolume;
         AudioManager.bossApproach.volume = AudioManager.bossMusicVolume;
-        AudioManager.bgMusic.play();
+        AudioManager.bgMusic.play().catch(() => {});
     }
 
     static startBossFight() {
@@ -75,7 +75,7 @@ class AudioManager {
         AudioManager.bossMusic.volume = AudioManager._savedBossMusicVolume;
         AudioManager.bossApproach.volume = AudioManager._savedBossMusicVolume;
         if (AudioManager.musicStarted && AudioManager.bgMusic.paused) {
-            AudioManager.bgMusic.play();
+            AudioManager.bgMusic.play().catch(() => {});
         }
     }
 }

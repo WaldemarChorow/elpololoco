@@ -113,6 +113,7 @@ class Character extends MovableObject {
         this.rightBoundary = 100;
 
         setInterval(() => {
+            if (this.world && this.world.paused) return;
             if (this.isDead()) {
                 this.soundRun.pause();
                 this.updateCamera();
@@ -146,12 +147,11 @@ class Character extends MovableObject {
         }, 1000 / 60);
 
         setInterval(() => {
+            if (this.world && this.world.paused) return;
             const aboveGround = this.isAboveGround();
 
             if (this.isDead()) {
-                // dead animation runs in its own interval
             } else if (this.isHurt()) {
-                // hurt animation runs in its own interval
             } else if (aboveGround) {
                 if (!this.jumpAnimationDone) {
                     let path = this.IMAGES_JUMPING[this.jumpFrame];
@@ -176,6 +176,7 @@ class Character extends MovableObject {
         },this.WALK_SPEED);
 
         setInterval(() => {
+            if (this.world && this.world.paused) return;
             const hurt = this.isHurt();
             if (!this.isDead() && hurt) {
                 if (!this.wasHurt) {
@@ -198,6 +199,7 @@ class Character extends MovableObject {
         }, this.HURT_SPEED);
 
         setInterval(() => {
+            if (this.world && this.world.paused) return;
             if (this.isDead()) {
                 if (!this.deadAnimationDone) {
                     this.soundDead.play();
@@ -216,10 +218,11 @@ class Character extends MovableObject {
         }, this.DEAD_SPEED);
 
         setInterval(() => {
+            if (this.world && this.world.paused) return;
             if (!this.isDead() && !this.isHurt() && !this.isAboveGround() &&
                 !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT) {
                 if (this.isIdleLong()) {
-                    this.soundSnoring.play();
+                    this.soundSnoring.play().catch(() => {});
                     this.playAnimation(this.IMAGE_IDLE_LONG);
                 } else {
                     this.soundSnoring.pause();
@@ -233,12 +236,12 @@ class Character extends MovableObject {
 
     isIdle() {
         let timepassed = (new Date().getTime() - this.lastMove) / 1000;
-        return timepassed >= 3 && timepassed < 6;
+        return timepassed >= 10 && timepassed < 20;
     }
 
     isIdleLong() {
         let timepassed = (new Date().getTime() - this.lastMove) / 1000;
-        return timepassed >= 6;
+        return timepassed >= 20;
     }
 
     updateCamera() {

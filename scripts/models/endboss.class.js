@@ -2,7 +2,8 @@ class Endboss extends MovableObject {
     width = 250;
     height = 400;
     y = 80;
-    speed = 0.15;
+    speed = 2.5;          // gleiche Geschwindigkeit wie Charakter
+
     IMAGES_WALKING = [
         'assets/img/4_enemie_boss_chicken/1_walk/G1.png',
         'assets/img/4_enemie_boss_chicken/1_walk/G2.png',
@@ -53,9 +54,13 @@ class Endboss extends MovableObject {
         bottom: 10
     };
 
-    ALERT_DURATION = 3000; 
-    ALERT_FPS = 150;        
-    WALK_FPS = 200;          
+    ALERT_DURATION  = 1000;   // ms Alert-Phase
+    INTRO_HURT_DURATION = 2000; // ms Hurt nach Alert
+    HURT_DURATION   = 1000;   // ms Hurt bei Flaschentreffer & nach Sprung
+    ALERT_FPS       = 150;
+    WALK_FPS        = 120;
+    JUMP_INTERVAL   = 6000;   // ms zwischen Sprüngen
+    JUMP_SPEED      = 28;
 
     constructor() {
         super().loadImage('assets/img/4_enemie_boss_chicken/2_alert/G5.png');
@@ -72,26 +77,77 @@ class Endboss extends MovableObject {
         this.visible = true;
         this.currentState = 'alert';
         this.currentImage = 0;
-        this.animate();
+        this.runSequence();
     }
 
-    animate() {
-        const alertInterval = setInterval(() => {
-            if (this.currentState === 'alert') {
-                this.playAnimation(this.IMAGES_ALERT);
-            }
-        }, this.ALERT_FPS);
-
+    runSequence() {
+        // Phase 1: 3 sec Alert
+        this.currentState = 'alert';
         setTimeout(() => {
-            clearInterval(alertInterval);
-            this.currentState = 'walking';
-            this.currentImage = 0;
-            setInterval(() => {
-                if (this.currentState === 'walking') {
-                    this.playAnimation(this.IMAGES_WALKING);
-                    this.moveLeft();
-                }
-            }, this.WALK_FPS);
+            // Phase 2: 3 sec Hurt (intro)
+            this.currentState = 'hurt';
+            setTimeout(() => {
+                // Phase 3: Laufen + Sprung-Zyklus
+                this.currentState = 'walking';
+                this.applyGravity();
+                this.startLoops();
+            }, this.INTRO_HURT_DURATION);
         }, this.ALERT_DURATION);
     }
-}   
+
+    startLoops() {
+        // Sprung-Zyklus
+        setInterval(() => {
+            if (window.gamePaused) return;
+            if (this.isDead() || this.currentState === 'hurt') return;
+            this.currentState = 'jumping';
+            this.speedY = this.JUMP_SPEED;
+        }, this.JUMP_INTERVAL);
+
+        // Landungserkennung → 3 sec Hurt
+        setInterval(() => {
+            if (window.gamePaused) return;
+            if (this.currentState === 'jumping' && !this.isAboveGround() && this.speedY <= 0) {
+                this.triggerHurt();
+            }
+        }, 1000 / 60);
+
+        // Bewegung nach links (auf Charakter zu)
+        setInterval(() => {
+            if (window.gamePaused) return;
+            if (this.isDead() || this.currentState === 'hurt' || this.currentState === 'alert') return;
+            this.moveLeft();
+        }, 1000 / 60);
+
+        // Animations-Loop
+        setInterval(() => {
+            if (window.gamePaused) return;
+            if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD);
+            } else if (this.currentState === 'hurt') {
+                this.playAnimation(this.IMAGES_HURT);
+            } else if (this.currentState === 'jumping') {
+                this.playAnimation(this.IMAGES_ATTACK);
+            } else if (this.currentState === 'alert') {
+                this.playAnimation(this.IMAGES_ALERT);
+            } else {
+                this.playAnimation(this.IMAGES_WALKING);
+            }
+        }, this.WALK_FPS);
+    }
+
+    energy = 50;
+
+    hit() {
+        this.energy = Math.max(0, this.energy - 10);
+        this.lastHit = new Date().getTime();
+    }
+
+    triggerHurt() {
+        if (this.isDead() || this.currentState === 'hurt') return;
+        this.currentState = 'hurt';
+        setTimeout(() => {
+            if (!this.isDead()) this.currentState = 'walking';
+        }, this.HURT_DURATION);
+    }
+}
