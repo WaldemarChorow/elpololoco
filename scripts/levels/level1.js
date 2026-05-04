@@ -20,7 +20,7 @@ function createLayers() {
 
 function createBackground() {
     const background = [];
-    for (let i = -2; i < 10; i++) {
+    for (let i = -2; i < 9; i++) {
         background.push(new Background('assets/img/5_background/layers/air.png', i * 719));
     }
     return background;
@@ -44,21 +44,23 @@ function createClouds() {
 }
 
 function createEnemies() {
-    const minDistance = 300;
-    const spread = 400;
-    let x = 1500;
-    const enemies = [];
-    [Chicken, Chicken, ChickenSmall, 
-        Chicken, ChickenSmall, Chicken, 
-        ChickenSmall, ChickenSmall, Chicken,
-        Chicken, Chicken, ChickenSmall,
-        ChickenSmall, ChickenSmall, Chicken,
+    const types  = [
         Chicken, ChickenSmall, Chicken,
-        Chicken, Chicken, ChickenSmall,
-    ].forEach(Type => {
-        enemies.push(new Type(x));
-        x += minDistance + Math.random() * spread;
+        ChickenSmall, Chicken, ChickenSmall,
+        Chicken, ChickenSmall, Chicken,
+        ChickenSmall, Chicken, ChickenSmall,
+    ];
+    const levelStart = 740;
+    const levelEnd   = 5900;
+    const count      = types.length;
+    const slot       = (levelEnd - levelStart) / count;
+    const enemies    = [];
+
+    types.forEach((Type, i) => {
+        const x = levelStart + i * slot + Math.random() * (slot * 0.5);
+        enemies.push(new Type(Math.round(x)));
     });
+
     enemies.push(new Endboss());
     return enemies;
 }

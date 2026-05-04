@@ -38,10 +38,18 @@ class World{
     run() {
         setInterval(() => {
             if (this.paused) return;
+            this.activateEnemiesInRange();
             this.checkCollisions();
             this.checkThrowObjects();
             this.level.enemies = this.level.enemies.filter(e => !e.remove);
         }, 1000 / 60);
+    }
+
+    activateEnemiesInRange() {
+        const charX = this.character.x;
+        this.level.enemies.forEach(e => {
+            if (!e.active && e.x - charX < 800) e.active = true;
+        });
     }
 
     checkThrowObjects() {

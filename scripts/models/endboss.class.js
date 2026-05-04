@@ -2,7 +2,7 @@ class Endboss extends MovableObject {
     width = 250;
     height = 400;
     y = 80;
-    speed = 2.5;          // gleiche Geschwindigkeit wie Charakter
+    speed = 3.5;   
 
     IMAGES_WALKING = [
         'assets/img/4_enemie_boss_chicken/1_walk/G1.png',
@@ -123,7 +123,14 @@ class Endboss extends MovableObject {
         setInterval(() => {
             if (window.gamePaused) return;
             if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
+                if (!this.deadAnimationDone) {
+                    this.img = this.imageCache[this.IMAGES_DEAD[this.deadFrame]];
+                    if (this.deadFrame < this.IMAGES_DEAD.length - 1) {
+                        this.deadFrame++;
+                    } else {
+                        this.deadAnimationDone = true;
+                    }
+                }
             } else if (this.currentState === 'hurt') {
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.currentState === 'jumping') {
@@ -137,6 +144,8 @@ class Endboss extends MovableObject {
     }
 
     energy = 50;
+    deadFrame = 0;
+    deadAnimationDone = false;
 
     hit() {
         this.energy = Math.max(0, this.energy - 10);

@@ -7,8 +7,8 @@ class AudioManager {
     static _savedBossMusicVolume = 0.5;
     static sounds = [];
 
-    static bgMusic = new Audio('assets/sounds/game/gameBackgoundMusic.mp3');
-    static bossApproach = new Audio('assets/sounds/endboss/endbossApproach.wav');
+    static bgMusic = new Audio('assets/sounds/game/gameMusic.mp3');
+    static bossApproach = new Audio('assets/sounds/game/bossFightMusic.mp3');
     static bossMusic = new Audio('assets/sounds/game/bossFightMusic.mp3');
 
     static initMusic() {

@@ -28,6 +28,7 @@
     <script src="scripts/levels/level1.js"></script>
     <script src="scripts/models/throwable-object.class.js"></script>
     <script src="scripts/models/action-icons.class.js"></script>
+    <script src="scripts/models/start-screen.class.js"></script>
     <script src="scripts/game.js"></script>
     
 </head>
@@ -73,10 +74,34 @@
                 </button>
             </div>
         </div>
-        <canvas id="canvas" width="720" height="480">
-            <button id="arrowLeft" onclick="moveLeft();"><</button>
-            <button id="arrowRight" onclick="moveRight();">></button>
-        </canvas>
+        <div id="canvas-wrapper">
+            <canvas id="canvas" width="720" height="480">
+                <button id="arrowLeft" onclick="moveLeft();"><</button>
+                <button id="arrowRight" onclick="moveRight();">></button>
+            </canvas>
+
+            <!-- Start Screen Overlay -->
+            <div id="start-screen">
+                <img id="start-screen-bg" src="assets/img/9_intro_outro_screens/start/startscreen_2.png" alt="Start">
+                <div id="start-screen-buttons">
+                    <button id="start-play-btn" onclick="StartScreen.play()">
+                        <img src="assets/img/10_icons/playIcon.png" alt="Play">
+                        <span>Play</span>
+                    </button>
+                    <button id="start-info-btn" onclick="StartScreen.toggleInfo()">
+                        <img src="assets/img/10_icons/infoIcon.png" alt="Info">
+                        <span>Controls</span>
+                    </button>
+                    <button id="start-sound-btn" onclick="StartScreen.toggleSound(event)">
+                        <img id="start-icon-sound" src="assets/img/10_icons/soundOnIcon.png" alt="Sound">
+                        <span>Sound</span>
+                    </button>
+                </div>
+                <div id="start-info-overlay">
+                    <button id="start-info-close" onclick="StartScreen.toggleInfo()">✕</button>
+                </div>
+            </div>
+        </div>
         <div id="info-banner">
             <button id="info-banner-close" onclick="ActionIcons.toggleInfo()">&times;</button>
             <!-- <img src="assets/img/5_background/bannerControlGame.png" alt="Steuerung"> -->

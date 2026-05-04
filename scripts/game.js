@@ -4,10 +4,12 @@ let keyboard = new Keyboard();
 
 function init() {
     canvas = document.getElementById('canvas');
+    // Spiel startet erst nach Klick auf Play im Startbildschirm
+}
+
+function startGame() {
     world = new World(canvas, keyboard, level1);
-    if (sessionStorage.getItem('audioUnlocked')) {
-        AudioManager.initMusic();
-    }
+    startAudioOnInteraction();
 }
 
 function startAudioOnInteraction() {
@@ -18,12 +20,20 @@ function startAudioOnInteraction() {
 }
 
 window.addEventListener('keydown', (e) => {
+    if ((e.code === 'Space' || e.code === 'Backspace') && document.activeElement?.tagName === 'BUTTON') {
+        e.preventDefault();
+        document.activeElement.blur();
+    }
     keyboard.KEYDOWN(e);
     startAudioOnInteraction();
 });
 
 window.addEventListener('click', () => {
-    startAudioOnInteraction();
+    if (!world) {
+        StartScreen.initMusic();
+    } else {
+        startAudioOnInteraction();
+    }
 });
 
 window.addEventListener('keyup', (e) => {
