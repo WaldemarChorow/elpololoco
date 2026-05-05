@@ -1,16 +1,37 @@
+/**
+ * Represents the game world and orchestrates all game logic, rendering, and collision detection.
+ * @class
+ */
 class World{
+    /** @type {Character} */
     character = new Character();
+    /** @type {Level} */
     level = level1;
+    /** @type {HTMLCanvasElement} */
     canvas;
+    /** @type {CanvasRenderingContext2D} */
     ctx;
+    /** @type {Keyboard} */
     keyboard;
+    /** @type {number} */
     camera_x = 0;
+    /** @type {StatusBar} */
     statusBar = new StatusBar();
+    /** @type {BossHealthBar} */
     bossHealthBar = new BossHealthBar();
+    /** @type {BottleStatusBar} */
     bottleStatusBar = new BottleStatusBar();
+    /** @type {CoinScore} */
     coinScore = new CoinScore();
+    /** @type {ThrowableObject[]} */
     therowableObjects = [];
 
+    /**
+     * Creates a new World instance, initializes all game systems, and starts the game loops.
+     * @param {HTMLCanvasElement} canvas - The canvas element to render the game on.
+     * @param {Keyboard} keyboard - The keyboard input tracker.
+     * @param {Level} level - The level data containing enemies, coins, bottles, and backgrounds.
+     */
     constructor(canvas, keyboard, level) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
@@ -29,13 +50,20 @@ class World{
         this.run();
     }
 
+    /**
+     * Assigns the world reference to the character and starts its animation loops.
+     */
     setWorld() {
         this.character.world = this;
         this.character.animate();
     }
 
+    /** @type {boolean} */
     paused = false;
 
+    /**
+     * Starts the main game loop that handles enemy activation, collision checks, and throw object updates.
+     */
     run() {
         setInterval(() => {
             if (this.paused) return;
@@ -46,6 +74,9 @@ class World{
         }, 1000 / 60);
     }
 
+    /**
+     * Activates enemies that are within range of the character's current position.
+     */
     activateEnemiesInRange() {
         const charX = this.character.x;
         this.level.enemies.forEach(e => {
@@ -53,6 +84,9 @@ class World{
         });
     }
 
+    /**
+     * Handles bottle throwing input, bottle-enemy collision detection, and removes finished throwable objects.
+     */
     checkThrowObjects() {
         if (this.keyboard.D && !this.throwKeyUsed && this.bottleStatusBar.count > 0) {
             const throwX = this.character.otherDirection ? this.character.x : this.character.x + 90;
@@ -80,6 +114,9 @@ class World{
         });
     }
 
+    /**
+     * Checks and resolves all collisions between the character, enemies, coins, and bottles.
+     */
     checkCollisions() {
         this.level.enemies.forEach((enemy) => {
             if (enemy.isDead()) return;
@@ -125,12 +162,18 @@ class World{
                 this.bottleStatusBar.count++;
             }
         });
-    }   
+    }
 
+    /** @type {boolean} */
     gameOverShown = false;
+    /** @type {boolean} */
     gameOverTriggered = false;
+    /** @type {number} */
     GAME_OVER_DELAY = 2000; // ms bis Game Over Screen erscheint — hier anpassen
 
+    /**
+     * Renders the entire game scene each frame, including background, entities, HUD, and game-over handling.
+     */
     draw() {
         if (this.paused) {
             requestAnimationFrame(() => this.draw());
@@ -171,12 +214,20 @@ class World{
         requestAnimationFrame(() => this.draw());
     }
 
+    /**
+     * Draws an array of objects onto the map by calling addToMap for each.
+     * @param {DrawableObjects[]} objects - The array of drawable objects to render.
+     */
     addObejectsToMap(objects) {
         objects.forEach((object) => {
             this.addToMap(object);
         });
     }
 
+    /**
+     * Draws a single object onto the canvas, flipping it horizontally if facing the other direction.
+     * @param {DrawableObjects} mo - The drawable object to render.
+     */
     addToMap(mo) {
         if (mo.otherDirection) {
             this.flipImage(mo);
@@ -188,6 +239,10 @@ class World{
         }
     }
 
+    /**
+     * Applies a horizontal flip transform to the canvas context for drawing mirrored objects.
+     * @param {DrawableObjects} mo - The object to flip.
+     */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.width, 0);
@@ -195,6 +250,10 @@ class World{
         mo.x = mo.x * -1;
     }
 
+    /**
+     * Restores the canvas context and reverts the object's x position after a flip.
+     * @param {DrawableObjects} mo - The object whose flip state to restore.
+     */
     flipImageBack(mo) {
         this.ctx.restore();
         mo.x = mo.x * -1;

@@ -1,8 +1,18 @@
+/**
+ * Manages the start screen UI, intro music, and game launch logic.
+ * @class
+ */
 class StartScreen {
+    /** @type {boolean} */
     static infoVisible = false;
+    /** @type {boolean} */
     static musicStarted = false;
+    /** @type {HTMLAudioElement} */
     static music = new Audio('assets/sounds/game/introMusic.mp3');
 
+    /**
+     * Initializes and starts the intro music if it has not already been started.
+     */
     static initMusic() {
         if (StartScreen.musicStarted) return;
         StartScreen.musicStarted = true;
@@ -11,11 +21,17 @@ class StartScreen {
         StartScreen.music.play().catch(() => {});
     }
 
+    /**
+     * Stops and resets the intro music playback.
+     */
     static stopMusic() {
         StartScreen.music.pause();
         StartScreen.music.currentTime = 0;
     }
 
+    /**
+     * Stops the intro music, hides the start screen, shows the game toolbar, and starts the game.
+     */
     static play() {
         StartScreen.stopMusic();
         document.getElementById('start-screen').style.display = 'none';
@@ -32,6 +48,9 @@ class StartScreen {
         MobileControls.update();
     }
 
+    /**
+     * Initializes music and toggles the visibility of the start screen info overlay.
+     */
     static toggleInfo() {
         StartScreen.initMusic();
         const overlay = document.getElementById('start-info-overlay');
@@ -39,6 +58,10 @@ class StartScreen {
         overlay.style.display = StartScreen.infoVisible ? 'block' : 'none';
     }
 
+    /**
+     * Toggles the mute state on the start screen and updates the sound icon accordingly.
+     * @param {Event} event - The click event, used to stop propagation.
+     */
     static toggleSound(event) {
         event.stopPropagation();
         StartScreen.initMusic();

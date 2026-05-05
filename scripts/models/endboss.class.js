@@ -1,9 +1,19 @@
+/**
+ * Represents the end boss enemy of the game.
+ * @class
+ * @extends MovableObject
+ */
 class Endboss extends MovableObject {
+    /** @type {number} */
     width = 250;
+    /** @type {number} */
     height = 400;
+    /** @type {number} */
     y = 80;
-    speed = 3.5;   
+    /** @type {number} */
+    speed = 3.5;
 
+    /** @type {string[]} */
     IMAGES_WALKING = [
         'assets/img/4_enemie_boss_chicken/1_walk/G1.png',
         'assets/img/4_enemie_boss_chicken/1_walk/G2.png',
@@ -11,6 +21,7 @@ class Endboss extends MovableObject {
         'assets/img/4_enemie_boss_chicken/1_walk/G4.png'
     ];
 
+    /** @type {string[]} */
     IMAGES_ALERT = [
         'assets/img/4_enemie_boss_chicken/2_alert/G5.png',
         'assets/img/4_enemie_boss_chicken/2_alert/G6.png',
@@ -22,6 +33,7 @@ class Endboss extends MovableObject {
         'assets/img/4_enemie_boss_chicken/2_alert/G12.png'
     ];
 
+    /** @type {string[]} */
     IMAGES_ATTACK = [
         'assets/img/4_enemie_boss_chicken/3_attack/G13.png',
         'assets/img/4_enemie_boss_chicken/3_attack/G14.png',
@@ -33,20 +45,24 @@ class Endboss extends MovableObject {
         'assets/img/4_enemie_boss_chicken/3_attack/G20.png'
     ];
 
+    /** @type {string[]} */
     IMAGES_HURT = [
         'assets/img/4_enemie_boss_chicken/4_hurt/G21.png',
         'assets/img/4_enemie_boss_chicken/4_hurt/G22.png',
         'assets/img/4_enemie_boss_chicken/4_hurt/G23.png',
     ];
 
+    /** @type {string[]} */
     IMAGES_DEAD = [
         'assets/img/4_enemie_boss_chicken/5_dead/G24.png',
         'assets/img/4_enemie_boss_chicken/5_dead/G25.png',
         'assets/img/4_enemie_boss_chicken/5_dead/G26.png',
     ];
 
+    /** @type {boolean} */
     visible = false;
 
+    /** @type {{top: number, left: number, right: number, bottom: number}} */
     offset = {
         top: 60,
         left: 50,
@@ -54,18 +70,32 @@ class Endboss extends MovableObject {
         bottom: 10
     };
 
+    /** @type {number} */
     ALERT_DURATION  = 1000;   // ms Alert-Phase
+    /** @type {number} */
     INTRO_HURT_DURATION = 2000; // ms Hurt nach Alert
+    /** @type {number} */
     HURT_DURATION   = 1000;   // ms Hurt bei Flaschentreffer & nach Sprung
+    /** @type {number} */
     ALERT_FPS       = 150;
+    /** @type {number} */
     WALK_FPS        = 120;
+    /** @type {number} */
     JUMP_INTERVAL   = 6000;   // ms zwischen Sprüngen
+    /** @type {number} */
     JUMP_SPEED      = 28;
+    /** @type {number} */
     KNOCKBACK_DISTANCE = 150; // px Rücksprung bei Kollision (horizontal)
+    /** @type {number} */
     KNOCKBACK_JUMP_SPEED = 18; // Sprungkraft für den Bogen-Rückwurf
+    /** @type {number} */
     KNOCKBACK_DURATION = 600; // ms Pause bevor Boss wieder angreift
+    /** @type {number} */
     KNOCKBACK_COOLDOWN = 800; // ms bis nächster Knockback möglich
 
+    /**
+     * Creates a new Endboss instance, loads all animation images, and sets the initial state.
+     */
     constructor() {
         super().loadImage('assets/img/4_enemie_boss_chicken/2_alert/G5.png');
         this.loadImages(this.IMAGES_ALERT);
@@ -77,6 +107,9 @@ class Endboss extends MovableObject {
         this.currentState = 'waiting';
     }
 
+    /**
+     * Makes the boss visible and starts the intro alert sequence.
+     */
     appear() {
         this.visible = true;
         this.currentState = 'alert';
@@ -84,6 +117,9 @@ class Endboss extends MovableObject {
         this.runSequence();
     }
 
+    /**
+     * Runs the intro sequence: alert phase, then hurt phase, then transitions to walking and starts loops.
+     */
     runSequence() {
         this.currentState = 'alert';
         setTimeout(() => {
@@ -96,6 +132,9 @@ class Endboss extends MovableObject {
         }, this.ALERT_DURATION);
     }
 
+    /**
+     * Starts all recurring game loops for the boss (jumping, landing, movement, and animation).
+     */
     startLoops() {
         setInterval(() => {
             if (window.gamePaused) return;
@@ -142,15 +181,24 @@ class Endboss extends MovableObject {
         }, this.WALK_FPS);
     }
 
+    /** @type {number} */
     energy = 50;
+    /** @type {number} */
     deadFrame = 0;
+    /** @type {boolean} */
     deadAnimationDone = false;
 
+    /**
+     * Reduces boss energy by 10 and records the time of the hit.
+     */
     hit() {
         this.energy = Math.max(0, this.energy - 10);
         this.lastHit = new Date().getTime();
     }
 
+    /**
+     * Starts the falling animation after the boss death sequence completes.
+     */
     startFalling() {
         const fall = setInterval(() => {
             if (window.gamePaused) return;
@@ -163,6 +211,9 @@ class Endboss extends MovableObject {
         }, 1000 / 60);
     }
 
+    /**
+     * Handles the game win state after the boss has fully fallen off screen.
+     */
     onDeathComplete() {
         AudioManager.stopBossMusic();
         new Audio('assets/sounds/game/winMusic.mp3').play().catch(() => {});
@@ -174,6 +225,9 @@ class Endboss extends MovableObject {
         }, 1000);
     }
 
+    /**
+     * Transitions the boss into the hurt state for a fixed duration, then back to walking.
+     */
     triggerHurt() {
         if (this.isDead() || this.currentState === 'hurt') return;
         this.currentState = 'hurt';
@@ -182,9 +236,14 @@ class Endboss extends MovableObject {
         }, this.HURT_DURATION);
     }
 
+    /** @type {boolean} */
     isKnockedBack = false;
+    /** @type {number} */
     lastKnockback = 0;
 
+    /**
+     * Triggers a knockback effect on the boss, pushing it horizontally and entering the hurt state.
+     */
     knockback() {
         if (this.isDead()) return;
         const now = new Date().getTime();

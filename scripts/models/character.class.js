@@ -1,9 +1,19 @@
+/**
+ * Represents the player-controlled character Pepe.
+ * @class
+ * @extends MovableObject
+ */
 class Character extends MovableObject {
+    /** @type {number} */
     width = 160;
+    /** @type {number} */
     height = 350;
+    /** @type {number} */
     y = 80;
+    /** @type {number} */
     speed = 2.5;
 
+    /** @type {{top: number, left: number, right: number, bottom: number}} */
     offset = {
         top: 150,
         left: 50,
@@ -11,6 +21,7 @@ class Character extends MovableObject {
         bottom: 30
     };
 
+    /** @type {string[]} */
     IMAGES_WALKING = [
         'assets/img/2_character_pepe/2_walk/W-21.png',
         'assets/img/2_character_pepe/2_walk/W-22.png',
@@ -18,8 +29,9 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/2_walk/W-24.png',
         'assets/img/2_character_pepe/2_walk/W-25.png',
         'assets/img/2_character_pepe/2_walk/W-26.png'
-    ]; 
+    ];
 
+    /** @type {string[]} */
     IMAGES_JUMPING = [
         'assets/img/2_character_pepe/3_jump/J-31.png',
         'assets/img/2_character_pepe/3_jump/J-32.png',
@@ -30,15 +42,17 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/3_jump/J-37.png',
         'assets/img/2_character_pepe/3_jump/J-38.png',
         'assets/img/2_character_pepe/3_jump/J-39.png',
-    
+
     ];
 
+    /** @type {string[]} */
     IMAGES_HURTS = [
         'assets/img/2_character_pepe/4_hurt/H-41.png',
         'assets/img/2_character_pepe/4_hurt/H-42.png',
         'assets/img/2_character_pepe/4_hurt/H-43.png',
     ];
 
+    /** @type {string[]} */
     IMAGES_DEAD = [
         'assets/img/2_character_pepe/5_dead/D-51.png',
         'assets/img/2_character_pepe/5_dead/D-52.png',
@@ -49,6 +63,7 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/5_dead/D-57.png',
     ];
 
+    /** @type {string[]} */
     IMAGES_IDLE_SHORT = [
         'assets/img/2_character_pepe/1_idle/idle/I-1.png',
         'assets/img/2_character_pepe/1_idle/idle/I-2.png',
@@ -62,6 +77,7 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/1_idle/idle/I-10.png'
     ];
 
+    /** @type {string[]} */
     IMAGE_IDLE_LONG = [
         'assets/img/2_character_pepe/1_idle/long_idle/I-11.png',
         'assets/img/2_character_pepe/1_idle/long_idle/I-12.png',
@@ -75,22 +91,39 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/1_idle/long_idle/I-20.png'
     ];
 
+    /** @type {number} */
     WALK_SPEED   = 130;
+    /** @type {number} */
     HURT_SPEED   = 200;
+    /** @type {number} */
     DEAD_SPEED   = 150;
+    /** @type {number} */
     IDLE_SPEED   = 400;
 
+    /** @type {World} */
     world;
+    /** @type {number} */
     lastMove = new Date().getTime();
+    /** @type {number} */
     jumpFrame = 0;
+    /** @type {boolean} */
     jumpAnimationDone = false;
+    /** @type {boolean} */
     wasAboveGround = false;
+    /** @type {number} */
     hurtFrame = 0;
+    /** @type {boolean} */
     hurtAnimationDone = false;
+    /** @type {boolean} */
     wasHurt = false;
+    /** @type {number} */
     deadFrame = 0;
+    /** @type {boolean} */
     deadAnimationDone = false;
 
+    /**
+     * Creates a new Character instance, loads all animation images and sounds, and starts animation loops.
+     */
     constructor() {
             super().loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
             this.soundRun    = AudioManager.create('assets/sounds/character/characterRun.mp3',    0.1);
@@ -107,7 +140,10 @@ class Character extends MovableObject {
             this.applyGravity();
             this.animate();
     }
-    
+
+    /**
+     * Starts all animation and movement interval loops for the character.
+     */
     animate() {
         this.leftBoundary = 100;
         this.rightBoundary = 100;
@@ -234,16 +270,27 @@ class Character extends MovableObject {
         },this.IDLE_SPEED);
     }
 
+    /**
+     * Checks whether the character has been idle for a short period (10–20 seconds).
+     * @returns {boolean} - True if the character is in short idle state.
+     */
     isIdle() {
         let timepassed = (new Date().getTime() - this.lastMove) / 1000;
         return timepassed >= 10 && timepassed < 20;
     }
 
+    /**
+     * Checks whether the character has been idle for a long period (20+ seconds).
+     * @returns {boolean} - True if the character is in long idle state.
+     */
     isIdleLong() {
         let timepassed = (new Date().getTime() - this.lastMove) / 1000;
         return timepassed >= 20;
     }
 
+    /**
+     * Updates the world camera position to keep the character within the visible boundaries.
+     */
     updateCamera() {
         const screenX = this.x + this.world.camera_x;
 
@@ -254,5 +301,5 @@ class Character extends MovableObject {
         }
     }
 
-    
+
 }

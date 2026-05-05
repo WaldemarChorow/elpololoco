@@ -1,11 +1,24 @@
+/**
+ * Tracks the state of keyboard inputs used for game controls.
+ * @class
+ */
 class Keyboard {
+    /** @type {boolean} */
     LEFT = false;
+    /** @type {boolean} */
     RIGHT = false;
+    /** @type {boolean} */
     UP = false;
+    /** @type {boolean} */
     DOWN = false;
+    /** @type {boolean} */
     SPACE = false;
+    /** @type {boolean} */
     D = false;
-    
+
+    /**
+     * Creates a new Keyboard instance and registers keydown/keyup event listeners on the window.
+     */
     constructor() {
         window.addEventListener('keydown', (e) => {
             this.KEYDOWN(e);
@@ -15,6 +28,10 @@ class Keyboard {
         });
     }
 
+    /**
+     * Sets the corresponding key state to true when a key is pressed.
+     * @param {KeyboardEvent} e - The keydown event.
+     */
     KEYDOWN(e) {
         if (e.key === 'ArrowLeft') {
             this.LEFT = true;
@@ -36,6 +53,10 @@ class Keyboard {
         }
     }
 
+    /**
+     * Sets the corresponding key state to false when a key is released.
+     * @param {KeyboardEvent} e - The keyup event.
+     */
     KEYUP(e) {
         if (e.key === 'ArrowLeft') {
             this.LEFT = false;

@@ -1,0 +1,33 @@
+{
+    "source": {
+        "include": [
+            "scripts/models/action-icons.class.js",
+            "scripts/models/audio-manager.class.js",
+            "scripts/models/background.class.js",
+            "scripts/models/bottle-status-bar.class.js",
+            "scripts/models/bottle.class.js",
+            "scripts/models/character.class.js",
+            "scripts/models/chicken-small.class.js",
+            "scripts/models/chicken.class.js",
+            "scripts/models/clouds.class.js",
+            "scripts/models/coin-score.class.js",
+            "scripts/models/coin.class.js",
+            "scripts/models/drawable-objects.class.js",
+            "scripts/models/endboss.class.js",
+            "scripts/models/health-bar-boss.class.js",
+            "scripts/models/keyboard.class.js",
+            "scripts/models/layers.class.js",
+            "scripts/models/level.class.js",
+            "scripts/models/mobile-controls.class.js",
+            "scripts/models/movable.object.class.js",
+            "scripts/models/start-screen.class.js",
+            "scripts/models/status-bar.class.js",
+            "scripts/models/throwable-object.class.js",
+            "scripts/models/world.class.js"
+        ]
+    },
+
+    "opts": {
+        "destination": "./out"
+    }
+}
