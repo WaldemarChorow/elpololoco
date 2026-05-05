@@ -88,11 +88,15 @@ function createBottles() {
     return bottles;
 }
 
-const level1 = new Level(
-    createEnemies(),
-    createCoins(),
-    createBottles(),
-    createClouds(),
-    createLayers(),
-    createBackground()
-);
+function createLevel1() {
+    return new Level(
+        createEnemies(),
+        createCoins(),
+        createBottles(),
+        createClouds(),
+        createLayers(),
+        createBackground()
+    );
+}
+
+let level1 = createLevel1();

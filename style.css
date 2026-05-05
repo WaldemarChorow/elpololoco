@@ -6,8 +6,13 @@
     font-display: swap;
 }
 
+html {
+    overflow: hidden;
+}
+
 body {
     margin: 0 auto;
+    overflow: hidden;
 }
 
 body {

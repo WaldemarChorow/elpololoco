@@ -136,49 +136,66 @@ class Endboss extends MovableObject {
      * Starts all recurring game loops for the boss (jumping, landing, movement, and animation).
      */
     startLoops() {
-        setInterval(() => {
-            if (window.gamePaused) return;
-            if (this.isDead() || this.currentState === 'hurt') return;
-            this.currentState = 'jumping';
-            this.speedY = this.JUMP_SPEED;
-        }, this.JUMP_INTERVAL);
+        setInterval(() => this.jumpLoop(), this.JUMP_INTERVAL);
+        setInterval(() => this.landingLoop(), 1000 / 60);
+        setInterval(() => this.movementLoop(), 1000 / 60);
+        setInterval(() => this.animationLoop(), this.WALK_FPS);
+    }
 
-        setInterval(() => {
-            if (window.gamePaused) return;
-            if (this.currentState === 'jumping' && !this.isAboveGround() && this.speedY <= 0) {
-                this.triggerHurt();
-            }
-        }, 1000 / 60);
+    /**
+     * Triggers a jump at regular intervals.
+     */
+    jumpLoop() {
+        if (window.gamePaused) return;
+        if (this.isDead() || this.currentState === 'hurt') return;
+        this.currentState = 'jumping';
+        this.speedY = this.JUMP_SPEED;
+    }
 
-        setInterval(() => {
-            if (window.gamePaused) return;
-            if (this.isDead() || this.currentState === 'hurt' || this.currentState === 'alert') return;
-            if (this.isKnockedBack) return;
-            this.moveLeft();
-        }, 1000 / 60);
+    /**
+     * Detects when the boss lands and triggers the hurt state.
+     */
+    landingLoop() {
+        if (window.gamePaused) return;
+        if (this.currentState === 'jumping' && !this.isAboveGround() && this.speedY <= 0) {
+            this.triggerHurt();
+        }
+    }
 
-        setInterval(() => {
-            if (window.gamePaused) return;
-            if (this.isDead()) {
-                if (!this.deadAnimationDone) {
-                    this.img = this.imageCache[this.IMAGES_DEAD[this.deadFrame]];
-                    if (this.deadFrame < this.IMAGES_DEAD.length - 1) {
-                        this.deadFrame++;
-                    } else {
-                        this.deadAnimationDone = true;
-                        this.startFalling();
-                    }
-                }
-            } else if (this.currentState === 'hurt') {
-                this.playAnimation(this.IMAGES_HURT);
-            } else if (this.currentState === 'jumping') {
-                this.playAnimation(this.IMAGES_ATTACK);
-            } else if (this.currentState === 'alert') {
-                this.playAnimation(this.IMAGES_ALERT);
-            } else {
-                this.playAnimation(this.IMAGES_WALKING);
-            }
-        }, this.WALK_FPS);
+    /**
+     * Moves the boss left each frame unless blocked.
+     */
+    movementLoop() {
+        if (window.gamePaused) return;
+        if (this.isDead() || this.currentState === 'hurt' || this.currentState === 'alert') return;
+        if (this.isKnockedBack) return;
+        this.moveLeft();
+    }
+
+    /**
+     * Plays the correct animation frame for the boss's current state.
+     */
+    animationLoop() {
+        if (window.gamePaused) return;
+        if (this.isDead()) { this.playDeadAnimation(); return; }
+        if (this.currentState === 'hurt') this.playAnimation(this.IMAGES_HURT);
+        else if (this.currentState === 'jumping') this.playAnimation(this.IMAGES_ATTACK);
+        else if (this.currentState === 'alert') this.playAnimation(this.IMAGES_ALERT);
+        else this.playAnimation(this.IMAGES_WALKING);
+    }
+
+    /**
+     * Advances the death animation frame by frame, then starts falling.
+     */
+    playDeadAnimation() {
+        if (this.deadAnimationDone) return;
+        this.img = this.imageCache[this.IMAGES_DEAD[this.deadFrame]];
+        if (this.deadFrame < this.IMAGES_DEAD.length - 1) {
+            this.deadFrame++;
+        } else {
+            this.deadAnimationDone = true;
+            this.startFalling();
+        }
     }
 
     /** @type {number} */
@@ -252,13 +269,19 @@ class Endboss extends MovableObject {
         this.isKnockedBack = true;
         this.currentState = 'hurt';
         this.speedY = this.KNOCKBACK_JUMP_SPEED;
-        const horizontalStep = this.KNOCKBACK_DISTANCE / (this.KNOCKBACK_DURATION / (1000 / 60));
-        const knockbackMove = setInterval(() => {
-            if (window.gamePaused) return;
-            this.x += horizontalStep;
+        this.startKnockbackMovement();
+    }
+
+    /**
+     * Moves the boss horizontally during knockback, then resets its state.
+     */
+    startKnockbackMovement() {
+        const step = this.KNOCKBACK_DISTANCE / (this.KNOCKBACK_DURATION / (1000 / 60));
+        const move = setInterval(() => {
+            if (!window.gamePaused) this.x += step;
         }, 1000 / 60);
         setTimeout(() => {
-            clearInterval(knockbackMove);
+            clearInterval(move);
             this.isKnockedBack = false;
             if (!this.isDead()) this.currentState = 'walking';
         }, this.KNOCKBACK_DURATION);

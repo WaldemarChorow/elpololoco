@@ -53,13 +53,14 @@ class ActionIcons {
             icon.src = 'assets/img/10_icons/soundOffIcon.png';
             ActionIcons.muted = true;
         }
+        localStorage.setItem('muted', ActionIcons.muted);
         ActionIcons.blur();
     }
 
     /**
-     * Restarts the game by reloading the page.
+     * Restarts the game without reloading the page.
      */
     static restart() {
-        location.reload();
+        restartGame();
     }
 }

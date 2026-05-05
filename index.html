@@ -91,21 +91,25 @@
                     <button id="btn-mobile-left" class="mobile-btn"
                         ontouchstart="MobileControls.press('LEFT', event)"
                         ontouchend="MobileControls.release('LEFT', event)"
-                        ontouchcancel="MobileControls.release('LEFT', event)">←</button>
+                        ontouchcancel="MobileControls.release('LEFT', event)"
+                        oncontextmenu="return false">←</button>
                     <button id="btn-mobile-right" class="mobile-btn"
                         ontouchstart="MobileControls.press('RIGHT', event)"
                         ontouchend="MobileControls.release('RIGHT', event)"
-                        ontouchcancel="MobileControls.release('RIGHT', event)">→</button>
+                        ontouchcancel="MobileControls.release('RIGHT', event)"
+                        oncontextmenu="return false">→</button>
                 </div>
                 <div id="mobile-controls-right">
                     <button id="btn-mobile-jump" class="mobile-btn"
                         ontouchstart="MobileControls.press('SPACE', event)"
                         ontouchend="MobileControls.release('SPACE', event)"
-                        ontouchcancel="MobileControls.release('SPACE', event)">↑</button>
+                        ontouchcancel="MobileControls.release('SPACE', event)"
+                        oncontextmenu="return false">↑</button>
                     <button id="btn-mobile-throw" class="mobile-btn mobile-btn-bottle"
                         ontouchstart="MobileControls.press('D', event)"
                         ontouchend="MobileControls.release('D', event)"
-                        ontouchcancel="MobileControls.release('D', event)">
+                        ontouchcancel="MobileControls.release('D', event)"
+                        oncontextmenu="return false">
                         <img src="assets/img/6_salsa_bottle/salsa_bottle.png" alt="Throw">
                     </button>
                 </div>
@@ -114,7 +118,7 @@
             <!-- You Win Overlay -->
             <div id="you-win-screen">
                 <img id="you-win-img" src="assets/img/You won, you lost/You Win A.png" alt="You Win">
-                <button id="you-win-restart" onclick="location.reload()">
+                <button id="you-win-restart" onclick="restartGame()">
                     <img src="assets/img/10_icons/restartIcon.png" alt="Restart">
                 </button>
             </div>
@@ -122,7 +126,7 @@
             <!-- Game Over Overlay -->
             <div id="game-over-screen">
                 <img id="game-over-img" src="assets/img/You won, you lost/Game Over.png" alt="Game Over">
-                <button id="game-over-restart" onclick="location.reload()">
+                <button id="game-over-restart" onclick="restartGame()">
                     <img src="assets/img/10_icons/restartIcon.png" alt="Restart">
                 </button>
             </div>

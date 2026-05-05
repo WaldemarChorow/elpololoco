@@ -5,12 +5,35 @@ let keyboard = new Keyboard();
 function init() {
     canvas = document.getElementById('canvas');
     MobileControls.init();
+    document.getElementById('about-modal').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+    });
+    if (localStorage.getItem('muted') === 'true') {
+        ActionIcons.muted = true;
+        document.getElementById('start-icon-sound').src = 'assets/img/10_icons/soundOffIcon.png';
+    }
 }
 
 function startGame() {
     if (typeof StartScreen !== 'undefined') StartScreen.stopMusic();
     world = new World(canvas, keyboard, level1);
     startAudioOnInteraction();
+}
+
+function restartGame() {
+    AudioManager.mute();
+    AudioManager.musicStarted = false;
+    level1 = createLevel1();
+    keyboard = new Keyboard();
+    document.getElementById('game-over-screen').classList.remove('visible');
+    document.getElementById('you-win-screen').classList.remove('visible');
+    document.getElementById('game-toolbar').style.display = 'flex';
+    world = new World(canvas, keyboard, level1);
+    if (ActionIcons.muted) {
+        AudioManager.mute();
+    } else {
+        startAudioOnInteraction();
+    }
 }
 
 function startAudioOnInteraction() {
