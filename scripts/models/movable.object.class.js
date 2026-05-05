@@ -76,11 +76,11 @@ class MovableObject extends DrawableObjects {
         this.speedY = 30;
     }
 
-    HIT_COOLDOWN = 0.2; // Sekunden Immunität nach einem Treffer — hier anpassen
+    HIT_COOLDOWN = 0.2;
 
-    hit() {
+    hit(damage = 10) {
         if (this.isHurt()) return;
-        this.energy = Math.max(0, this.energy - 5);
+        this.energy = Math.max(0, this.energy - damage);
         this.lastHit = new Date().getTime();
     }
 

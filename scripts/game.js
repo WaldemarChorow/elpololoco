@@ -4,10 +4,12 @@ let keyboard = new Keyboard();
 
 function init() {
     canvas = document.getElementById('canvas');
+    MobileControls.init();
     // Spiel startet erst nach Klick auf Play im Startbildschirm
 }
 
 function startGame() {
+    if (typeof StartScreen !== 'undefined') StartScreen.stopMusic();
     world = new World(canvas, keyboard, level1);
     startAudioOnInteraction();
 }

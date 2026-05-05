@@ -2,7 +2,7 @@ class StatusBar extends DrawableObjects {
     width = 200;
     height = 60;
     x = 10;
-    y = 10;
+    y = 50;
 
     IMAGES_HEALTH = [
         'assets/img/7_statusbars/1_statusbar/2_statusbar_health/orange/0.png',

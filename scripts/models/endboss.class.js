@@ -61,6 +61,10 @@ class Endboss extends MovableObject {
     WALK_FPS        = 120;
     JUMP_INTERVAL   = 6000;   // ms zwischen Sprüngen
     JUMP_SPEED      = 28;
+    KNOCKBACK_DISTANCE = 150; // px Rücksprung bei Kollision (horizontal)
+    KNOCKBACK_JUMP_SPEED = 18; // Sprungkraft für den Bogen-Rückwurf
+    KNOCKBACK_DURATION = 600; // ms Pause bevor Boss wieder angreift
+    KNOCKBACK_COOLDOWN = 800; // ms bis nächster Knockback möglich
 
     constructor() {
         super().loadImage('assets/img/4_enemie_boss_chicken/2_alert/G5.png');
@@ -116,6 +120,7 @@ class Endboss extends MovableObject {
         setInterval(() => {
             if (window.gamePaused) return;
             if (this.isDead() || this.currentState === 'hurt' || this.currentState === 'alert') return;
+            if (this.isKnockedBack) return;
             this.moveLeft();
         }, 1000 / 60);
 
@@ -182,5 +187,28 @@ class Endboss extends MovableObject {
         setTimeout(() => {
             if (!this.isDead()) this.currentState = 'walking';
         }, this.HURT_DURATION);
+    }
+
+    isKnockedBack = false;
+    lastKnockback = 0;
+
+    knockback() {
+        if (this.isDead()) return;
+        const now = new Date().getTime();
+        if (now - this.lastKnockback < this.KNOCKBACK_COOLDOWN) return;
+        this.lastKnockback = now;
+        this.isKnockedBack = true;
+        this.currentState = 'hurt';
+        this.speedY = this.KNOCKBACK_JUMP_SPEED;
+        const horizontalStep = this.KNOCKBACK_DISTANCE / (this.KNOCKBACK_DURATION / (1000 / 60));
+        const knockbackMove = setInterval(() => {
+            if (window.gamePaused) return;
+            this.x += horizontalStep;
+        }, 1000 / 60);
+        setTimeout(() => {
+            clearInterval(knockbackMove);
+            this.isKnockedBack = false;
+            if (!this.isDead()) this.currentState = 'walking';
+        }, this.KNOCKBACK_DURATION);
     }
 }

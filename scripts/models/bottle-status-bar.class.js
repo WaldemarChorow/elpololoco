@@ -1,6 +1,6 @@
 class BottleStatusBar extends DrawableObjects {
     x = 5;
-    y = 70;
+    y = 120;
     width = 50;
     height = 60;
     count = 0;

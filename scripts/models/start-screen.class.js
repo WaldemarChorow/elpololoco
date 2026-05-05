@@ -23,7 +23,13 @@ class StartScreen {
         if (ActionIcons.muted) {
             document.getElementById('icon-sound').src = 'assets/img/10_icons/soundOffIcon.png';
         }
+        if (MobileControls.isTouchDevice() && MobileControls.isPortrait()) {
+            MobileControls.pendingStart = true;
+            MobileControls.showRotatePrompt();
+            return;
+        }
         startGame();
+        MobileControls.update();
     }
 
     static toggleInfo() {

@@ -18,6 +18,7 @@ class World{
         this.level = level;
         this.soundCoin = AudioManager.create('assets/sounds/collectibles/collectSound.wav');
         this.soundBottleCollect = AudioManager.create('assets/sounds/collectibles/bottleCollectSound.wav');
+        this.soundBossHit = AudioManager.create('assets/sounds/chicken/chickenDead2.mp3');
         this.enemies = level.enemies;
         this.clouds = level.clouds;
         this.layers = level.layers;
@@ -68,6 +69,8 @@ class World{
                     obj.splash();
                     enemy.hit();
                     if (enemy instanceof Endboss) {
+                        this.soundBossHit.currentTime = 0;
+                        this.soundBossHit.play().catch(() => {});
                         enemy.triggerHurt();
                         this.bossHealthBar.setHealth(enemy.energy);
                     }
@@ -86,8 +89,16 @@ class World{
                 if ((enemy instanceof Chicken || enemy instanceof ChickenSmall) && jumpingOnTop) {
                     enemy.die();
                     this.character.speedY = 15;
+                } else if (enemy instanceof Endboss) {
+                    if (!this.character.isHurt()) {
+                        this.soundBossHit.currentTime = 0;
+                        this.soundBossHit.play().catch(() => {});
+                    }
+                    this.character.hit(15);
+                    this.statusBar.setHealth(this.character.energy);
+                    enemy.knockback();
                 } else {
-                    this.character.hit();
+                    this.character.hit(10);
                     this.statusBar.setHealth(this.character.energy);
                 }
             }

@@ -2,7 +2,7 @@ class BossHealthBar extends DrawableObjects {
     width = 200;
     height = 60;
     x = 500;
-    y = 15;
+    y = 55;
     visible = false;
     otherDirection = true;
 
