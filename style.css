@@ -513,7 +513,6 @@ h1{
 /* === Mobile Landscape: Vollbild im Spiel, Start-Screen normal === */
 @media (orientation: landscape) and (pointer: coarse) {
 
-    /* --- Start-Screen: Seite normal, Canvas passt sich an --- */
     canvas {
         width: 100%;
         height: auto;
@@ -535,7 +534,6 @@ h1{
         font-size: 15px;
     }
 
-    /* --- Vollbild nur im Spiel (body.game-fullscreen) --- */
     body.game-fullscreen {
         overflow: hidden;
     }
@@ -564,7 +562,6 @@ h1{
     }
     body.game-fullscreen #canvas-wrapper {
         position: relative;
-        /* Proportionen 720:480 = 3:2 erhalten, schwarze Balken links/rechts */
         height: 100vh;
         width: calc(100vh * 720 / 480);
         max-width: 100vw;
@@ -577,7 +574,6 @@ h1{
         display: block;
         aspect-ratio: auto;
     }
-    /* Toolbar: oben in Canvas, über dem Spiel */
     body.game-fullscreen #game-toolbar {
         position: absolute;
         top: 0;
@@ -618,7 +614,6 @@ h1{
         filter: none;
         transition: none;
     }
-    /* Mobile-Controls: exakt über Canvas positioniert */
     body.game-fullscreen #mobile-controls {
         position: absolute;
         inset: 0;

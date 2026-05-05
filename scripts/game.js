@@ -5,7 +5,6 @@ let keyboard = new Keyboard();
 function init() {
     canvas = document.getElementById('canvas');
     MobileControls.init();
-    // Spiel startet erst nach Klick auf Play im Startbildschirm
 }
 
 function startGame() {

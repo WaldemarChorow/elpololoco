@@ -85,13 +85,10 @@ class Endboss extends MovableObject {
     }
 
     runSequence() {
-        // Phase 1: 3 sec Alert
         this.currentState = 'alert';
         setTimeout(() => {
-            // Phase 2: 3 sec Hurt (intro)
             this.currentState = 'hurt';
             setTimeout(() => {
-                // Phase 3: Laufen + Sprung-Zyklus
                 this.currentState = 'walking';
                 this.applyGravity();
                 this.startLoops();
@@ -100,7 +97,6 @@ class Endboss extends MovableObject {
     }
 
     startLoops() {
-        // Sprung-Zyklus
         setInterval(() => {
             if (window.gamePaused) return;
             if (this.isDead() || this.currentState === 'hurt') return;
@@ -108,7 +104,6 @@ class Endboss extends MovableObject {
             this.speedY = this.JUMP_SPEED;
         }, this.JUMP_INTERVAL);
 
-        // Landungserkennung → 3 sec Hurt
         setInterval(() => {
             if (window.gamePaused) return;
             if (this.currentState === 'jumping' && !this.isAboveGround() && this.speedY <= 0) {
@@ -116,7 +111,6 @@ class Endboss extends MovableObject {
             }
         }, 1000 / 60);
 
-        // Bewegung nach links (auf Charakter zu)
         setInterval(() => {
             if (window.gamePaused) return;
             if (this.isDead() || this.currentState === 'hurt' || this.currentState === 'alert') return;
@@ -124,7 +118,6 @@ class Endboss extends MovableObject {
             this.moveLeft();
         }, 1000 / 60);
 
-        // Animations-Loop
         setInterval(() => {
             if (window.gamePaused) return;
             if (this.isDead()) {
