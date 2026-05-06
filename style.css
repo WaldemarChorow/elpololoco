@@ -286,30 +286,35 @@ canvas {
     transform: scale(1.15);
 }
 
-#info-banner {
+#info-modal {
     display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+#info-modal.open {
+    display: flex;
+}
+
+#info-content {
     position: relative;
-    width: 720px;
-    height: 112px;
-    margin-top: 8px;
     border: 3px solid #b87202;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 8px 32px rgba(0,0,0,0.8), 0 0 16px rgba(184,114,2,0.3);
-    background-image: url(assets/img/5_background/);
 }
 
-#info-banner.open {
-    display: flex;
-}
-
-#info-banner img {
+#info-content img {
     display: block;
     width: 100%;
     height: auto;
 }
 
-#info-banner-close {
+#info-modal-close {
     position: absolute;
     top: 8px;
     right: 12px;
@@ -325,7 +330,7 @@ canvas {
     transition: background 0.2s, color 0.2s;
 }
 
-#info-banner-close:hover {
+#info-modal-close:hover {
     background: #b87202;
     color: #3a1a00;
 }

@@ -8,6 +8,9 @@ function init() {
     document.getElementById('about-modal').addEventListener('click', (e) => {
         if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
     });
+    document.getElementById('info-modal').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) ActionIcons.toggleInfo();
+    });
     if (localStorage.getItem('muted') === 'true') {
         ActionIcons.muted = true;
         document.getElementById('start-icon-sound').src = 'assets/img/10_icons/soundOffIcon.png';

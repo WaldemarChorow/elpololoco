@@ -14,10 +14,18 @@ class ActionIcons {
     }
 
     /**
-     * Toggles the visibility of the info banner overlay.
+     * Toggles the info overlay and pauses/resumes the game accordingly.
      */
     static toggleInfo() {
-        document.getElementById('info-banner').classList.toggle('open');
+        const modal = document.getElementById('info-modal');
+        const isOpening = !modal.classList.contains('open');
+        modal.classList.toggle('open');
+        if (world) {
+            world.paused = isOpening;
+            window.gamePaused = isOpening;
+            if (isOpening) AudioManager.mute();
+            else if (!ActionIcons.muted) AudioManager.unmute();
+        }
         ActionIcons.blur();
     }
 
