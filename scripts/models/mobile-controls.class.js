@@ -85,7 +85,6 @@ class MobileControls {
      * @param {Event} event - The touch event, used to prevent default browser behavior.
      */
     static press(key, event) {
-        if (event) event.preventDefault();
         if (typeof keyboard !== 'undefined') keyboard[key] = true;
     }
 
@@ -95,7 +94,6 @@ class MobileControls {
      * @param {Event} event - The touch event, used to prevent default browser behavior.
      */
     static release(key, event) {
-        if (event) event.preventDefault();
         if (typeof keyboard !== 'undefined') keyboard[key] = false;
     }
 }

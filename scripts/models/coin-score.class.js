@@ -7,7 +7,7 @@ class CoinScore extends DrawableObjects {
     /** @type {number} */
     x = 300;
     /** @type {number} */
-    y = 10;
+    y = 55;
     /** @type {number} */
     width = 60;
     /** @type {number} */

@@ -118,7 +118,7 @@ class World{
                 this.soundBossHit.currentTime = 0;
                 this.soundBossHit.play().catch(() => {});
                 enemy.triggerHurt();
-                this.bossHealthBar.setHealth(enemy.energy);
+                this.bossHealthBar.setHealth(enemy.energy * 2);
             }
             if (enemy.isDead() && enemy.die) enemy.die();
         });
@@ -160,7 +160,8 @@ class World{
             this.character.speedY = 15;
         } else if (enemy instanceof Endboss) {
             if (!this.character.isHurt()) { this.soundBossHit.currentTime = 0; this.soundBossHit.play().catch(() => {}); }
-            this.character.hit(15);
+            const damage = enemy.getPhase() === 2 ? 25 : 15;
+            this.character.hit(damage);
             this.statusBar.setHealth(this.character.energy);
             enemy.knockback();
         } else {
@@ -186,7 +187,7 @@ class World{
      * @param {Bottle} bottle - The bottle to check.
      */
     checkBottlePickup(bottle) {
-        if (!bottle.collected && this.character.isColliding(bottle)) {
+        if (!bottle.collected && this.bottleStatusBar.count < 5 && this.character.isColliding(bottle)) {
             bottle.collected = true;
             this.soundBottleCollect.play();
             this.bottleStatusBar.count++;
@@ -198,19 +199,19 @@ class World{
     /** @type {boolean} */
     gameOverTriggered = false;
     /** @type {number} */
-    GAME_OVER_DELAY = 2000; // ms bis Game Over Screen erscheint — hier anpassen
+    GAME_OVER_DELAY = 2000;
 
     /**
      * Renders the entire game scene each frame, including background, entities, HUD, and game-over handling.
      */
     draw() {
-        if (this.paused) { requestAnimationFrame(() => this.draw()); return; }
+        if (this.stopped) return;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.translate(this.camera_x, 0);
         this.drawBackground();
         if (!this.gameOverShown) this.drawGameObjects();
         else this.ctx.translate(-this.camera_x, 0);
-        this.checkGameOver();
+        if (!this.paused) this.checkGameOver();
         requestAnimationFrame(() => this.draw());
     }
 

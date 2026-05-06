@@ -80,9 +80,10 @@ function createCoins() {
 function createBottles() {
     const bottles = [];
     const positions = [
-        [600, 340], [2200, 340],   
-        [3200, 340], [4400, 350],
-        [5400, 350],
+        [600, 340], [1400, 340], [2200, 340],
+        [2700, 340], [3200, 340], [3800, 350],
+        [4400, 350], [4900, 350], [5400, 350],
+        [5800, 350],
     ];
     positions.forEach(([x, y], i) => bottles.push(new Bottle(x, y, i)));
     return bottles;

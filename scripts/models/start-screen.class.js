@@ -75,6 +75,5 @@ class StartScreen {
             icon.src = 'assets/img/10_icons/soundOffIcon.png';
             StartScreen.music.volume = 0;
         }
-        localStorage.setItem('muted', ActionIcons.muted);
     }
 }

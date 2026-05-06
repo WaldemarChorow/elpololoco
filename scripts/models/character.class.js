@@ -98,7 +98,7 @@ class Character extends MovableObject {
     /** @type {number} */
     DEAD_SPEED   = 150;
     /** @type {number} */
-    IDLE_SPEED   = 400;
+    IDLE_SPEED   = 1000;
 
     /** @type {World} */
     world;
@@ -126,8 +126,8 @@ class Character extends MovableObject {
      */
     constructor() {
             super().loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
-            this.soundRun    = AudioManager.create('assets/sounds/character/characterRun.mp3',    0.1);
-            this.soundJump   = AudioManager.create('assets/sounds/character/characterJump.wav',   0.4);
+            this.soundRun    = AudioManager.create('assets/sounds/character/characterRun.mp3',    0.2);
+            this.soundJump   = AudioManager.create('assets/sounds/character/characterJump.mp3',   0.1);
             this.soundDamage = AudioManager.create('assets/sounds/character/characterDamage.mp3', 0.5);
             this.soundDead   = AudioManager.create('assets/sounds/character/characterDead.wav',   0.5);
             this.soundSnoring= AudioManager.create('assets/sounds/character/characterSnoring.mp3',0.3);
@@ -183,6 +183,7 @@ class Character extends MovableObject {
             this.jump();
             this.jumpFrame = 0;
             this.jumpAnimationDone = false;
+            this.soundJump.currentTime = 0;
             this.soundJump.play();
             this.lastMove = new Date().getTime();
         } else if (!this.world.keyboard.SPACE && this.isAboveGround() && this.speedY > 5) {
@@ -200,10 +201,10 @@ class Character extends MovableObject {
             this.playJumpFrame();
         } else if (!this.isDead() && !this.isHurt() && !aboveGround) {
             if (this.wasAboveGround) {
-                this.img = this.imageCache['assets/img/2_character_pepe/1_idle/idle/I-1.png'];
                 this.jumpFrame = 0;
                 this.jumpAnimationDone = false;
-            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+            }
+            if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                 this.playAnimation(this.IMAGES_WALKING);
             }
         }
@@ -278,7 +279,7 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGE_IDLE_LONG);
             } else {
                 this.soundSnoring.pause();
-                if (this.isIdle()) this.playAnimation(this.IMAGES_IDLE_SHORT);
+                this.playAnimation(this.IMAGES_IDLE_SHORT);
             }
         } else {
             this.soundSnoring.pause();

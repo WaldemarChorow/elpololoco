@@ -71,27 +71,41 @@ class Endboss extends MovableObject {
     };
 
     /** @type {number} */
-    ALERT_DURATION  = 1000;   // ms Alert-Phase
+    ALERT_DURATION      = 1000;
     /** @type {number} */
-    INTRO_HURT_DURATION = 2000; // ms Hurt nach Alert
+    INTRO_HURT_DURATION = 2000;
     /** @type {number} */
-    HURT_DURATION   = 1000;   // ms Hurt bei Flaschentreffer & nach Sprung
+    HURT_DURATION       = 1000;
     /** @type {number} */
-    ALERT_FPS       = 150;
+    ALERT_FPS           = 150;
     /** @type {number} */
-    WALK_FPS        = 120;
+    WALK_FPS            = 120;
     /** @type {number} */
-    JUMP_INTERVAL   = 6000;   // ms zwischen Sprüngen
+    JUMP_INTERVAL_P1    = 6000;
     /** @type {number} */
-    JUMP_SPEED      = 28;
+    JUMP_INTERVAL_P2    = 3000;
     /** @type {number} */
-    KNOCKBACK_DISTANCE = 150; // px Rücksprung bei Kollision (horizontal)
+    JUMP_SPEED          = 28;
     /** @type {number} */
-    KNOCKBACK_JUMP_SPEED = 18; // Sprungkraft für den Bogen-Rückwurf
+    KNOCKBACK_DISTANCE  = 150;
     /** @type {number} */
-    KNOCKBACK_DURATION = 600; // ms Pause bevor Boss wieder angreift
+    KNOCKBACK_JUMP_SPEED = 18;
     /** @type {number} */
-    KNOCKBACK_COOLDOWN = 800; // ms bis nächster Knockback möglich
+    KNOCKBACK_DURATION  = 600;
+    /** @type {number} */
+    KNOCKBACK_COOLDOWN  = 800;
+    /** @type {number} */
+    PHASE2_THRESHOLD    = 30;
+    /** @type {number} */
+    SPEED_PHASE1        = 3.5;
+    /** @type {number} */
+    SPEED_PHASE2        = 7;
+    /** @type {number} */
+    DASH_INTERVAL       = 8000;
+    /** @type {number} */
+    DASH_DURATION       = 500;
+    /** @type {number} */
+    DASH_SPEED          = 14;
 
     /**
      * Creates a new Endboss instance, loads all animation images, and sets the initial state.
@@ -136,17 +150,36 @@ class Endboss extends MovableObject {
      * Starts all recurring game loops for the boss (jumping, landing, movement, and animation).
      */
     startLoops() {
-        setInterval(() => this.jumpLoop(), this.JUMP_INTERVAL);
+        setInterval(() => this.jumpLoopP1(), this.JUMP_INTERVAL_P1);
+        setInterval(() => this.jumpLoopP2(), this.JUMP_INTERVAL_P2);
         setInterval(() => this.landingLoop(), 1000 / 60);
         setInterval(() => this.movementLoop(), 1000 / 60);
         setInterval(() => this.animationLoop(), this.WALK_FPS);
+        setInterval(() => this.triggerDash(), this.DASH_INTERVAL);
     }
 
     /**
-     * Triggers a jump at regular intervals.
+     * Returns the current phase (1 or 2) based on remaining energy.
      */
-    jumpLoop() {
-        if (window.gamePaused) return;
+    getPhase() {
+        return this.energy <= this.PHASE2_THRESHOLD ? 2 : 1;
+    }
+
+    /**
+     * Triggers a jump in phase 1 only.
+     */
+    jumpLoopP1() {
+        if (window.gamePaused || this.getPhase() !== 1) return;
+        if (this.isDead() || this.currentState === 'hurt') return;
+        this.currentState = 'jumping';
+        this.speedY = this.JUMP_SPEED;
+    }
+
+    /**
+     * Triggers a jump in phase 2 only (faster interval).
+     */
+    jumpLoopP2() {
+        if (window.gamePaused || this.getPhase() !== 2) return;
         if (this.isDead() || this.currentState === 'hurt') return;
         this.currentState = 'jumping';
         this.speedY = this.JUMP_SPEED;
@@ -163,13 +196,18 @@ class Endboss extends MovableObject {
     }
 
     /**
-     * Moves the boss left each frame unless blocked.
+     * Moves the boss left each frame, speed depends on current phase.
      */
     movementLoop() {
         if (window.gamePaused) return;
         if (this.isDead() || this.currentState === 'hurt' || this.currentState === 'alert') return;
         if (this.isKnockedBack) return;
-        this.moveLeft();
+        if (this.currentState === 'dashing') {
+            this.x -= this.DASH_SPEED;
+        } else {
+            this.speed = this.getPhase() === 2 ? this.SPEED_PHASE2 : this.SPEED_PHASE1;
+            this.moveLeft();
+        }
     }
 
     /**
@@ -179,9 +217,21 @@ class Endboss extends MovableObject {
         if (window.gamePaused) return;
         if (this.isDead()) { this.playDeadAnimation(); return; }
         if (this.currentState === 'hurt') this.playAnimation(this.IMAGES_HURT);
-        else if (this.currentState === 'jumping') this.playAnimation(this.IMAGES_ATTACK);
+        else if (this.currentState === 'jumping' || this.currentState === 'dashing') this.playAnimation(this.IMAGES_ATTACK);
         else if (this.currentState === 'alert') this.playAnimation(this.IMAGES_ALERT);
         else this.playAnimation(this.IMAGES_WALKING);
+    }
+
+    /**
+     * Triggers a short dash attack toward the character.
+     */
+    triggerDash() {
+        if (window.gamePaused) return;
+        if (this.isDead() || this.currentState === 'hurt' || this.isKnockedBack) return;
+        this.currentState = 'dashing';
+        setTimeout(() => {
+            if (!this.isDead()) this.currentState = 'walking';
+        }, this.DASH_DURATION);
     }
 
     /**

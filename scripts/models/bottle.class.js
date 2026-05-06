@@ -9,6 +9,9 @@ class Bottle extends MovableObject {
     /** @type {number} */
     height = 80;
 
+    /** @type {{top: number, left: number, right: number, bottom: number}} */
+    offset = { top: 10, left: 15, right: 15, bottom: 5 };
+
     /** @type {string[]} */
     images = [
         'assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png',

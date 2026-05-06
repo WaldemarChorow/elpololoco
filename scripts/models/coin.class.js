@@ -9,6 +9,9 @@ class Coin extends MovableObject {
     /** @type {number} */
     height = 120;
 
+    /** @type {{top: number, left: number, right: number, bottom: number}} */
+    offset = { top: 35, left: 35, right: 35, bottom: 35 };
+
     /** @type {string[]} */
     images =[
         'assets/img/8_coin/coin_1.png',

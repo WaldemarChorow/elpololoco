@@ -9,12 +9,6 @@ class AudioManager {
     static musicVolume = 0.4;
     /** @type {number} */
     static bossMusicVolume = 0.5;
-    /** @type {number} */
-    static _savedVolume = 0.3;
-    /** @type {number} */
-    static _savedMusicVolume = 0.4;
-    /** @type {number} */
-    static _savedBossMusicVolume = 0.5;
     /** @type {HTMLAudioElement[]} */
     static sounds = [];
 
@@ -31,11 +25,12 @@ class AudioManager {
     static initMusic() {
         if (AudioManager.musicStarted) return;
         AudioManager.musicStarted = true;
+        const muted = typeof ActionIcons !== 'undefined' && ActionIcons.muted;
         AudioManager.bgMusic.loop = true;
-        AudioManager.bgMusic.volume = AudioManager.musicVolume;
+        AudioManager.bgMusic.volume = muted ? 0 : AudioManager.musicVolume;
         AudioManager.bossMusic.loop = true;
-        AudioManager.bossMusic.volume = AudioManager.bossMusicVolume;
-        AudioManager.bossApproach.volume = AudioManager.bossMusicVolume;
+        AudioManager.bossMusic.volume = muted ? 0 : AudioManager.bossMusicVolume;
+        AudioManager.bossApproach.volume = muted ? 0 : AudioManager.bossMusicVolume;
         AudioManager.bgMusic.play().catch(() => {});
     }
 
@@ -104,9 +99,6 @@ class AudioManager {
      * Mutes all sounds and music by setting their volume to zero.
      */
     static mute() {
-        AudioManager._savedVolume = AudioManager.volume;
-        AudioManager._savedMusicVolume = AudioManager.musicVolume;
-        AudioManager._savedBossMusicVolume = AudioManager.bossMusicVolume;
         AudioManager.sounds.forEach(s => s.volume = 0);
         AudioManager.bgMusic.volume = 0;
         AudioManager.bossMusic.volume = 0;
@@ -117,10 +109,12 @@ class AudioManager {
      * Restores all sounds and music to their previously saved volume levels.
      */
     static unmute() {
-        AudioManager.sounds.forEach(s => s.volume = AudioManager._savedVolume);
-        AudioManager.bgMusic.volume = AudioManager._savedMusicVolume;
-        AudioManager.bossMusic.volume = AudioManager._savedBossMusicVolume;
-        AudioManager.bossApproach.volume = AudioManager._savedBossMusicVolume;
+        AudioManager.sounds.forEach(s => {
+            s.volume = s._customVolume !== null ? s._customVolume : AudioManager.volume;
+        });
+        AudioManager.bgMusic.volume = AudioManager.musicVolume;
+        AudioManager.bossMusic.volume = AudioManager.bossMusicVolume;
+        AudioManager.bossApproach.volume = AudioManager.bossMusicVolume;
         if (AudioManager.musicStarted && AudioManager.bgMusic.paused) {
             AudioManager.bgMusic.play().catch(() => {});
         }
