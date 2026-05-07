@@ -36,9 +36,7 @@ class StartScreen {
         StartScreen.stopMusic();
         document.getElementById('start-screen').style.display = 'none';
         document.getElementById('game-toolbar').style.display = 'flex';
-        if (ActionIcons.muted) {
-            document.getElementById('icon-sound').src = 'assets/img/10_icons/soundOffIcon.png';
-        }
+        if (ActionIcons.muted) StartScreen.applyMutedUI();
         if (MobileControls.isTouchDevice() && MobileControls.isPortrait()) {
             MobileControls.pendingStart = true;
             MobileControls.showRotatePrompt();
@@ -46,6 +44,17 @@ class StartScreen {
         }
         startGame();
         MobileControls.update();
+    }
+
+    /**
+     * Updates the toolbar sound icon and slider values for the muted state.
+     */
+    static applyMutedUI() {
+        document.getElementById('icon-sound').src = 'assets/img/10_icons/soundOffIcon.png';
+        const musicSlider = document.getElementById('music-slider');
+        const sfxSlider = document.getElementById('sfx-slider');
+        if (musicSlider) musicSlider.value = 0;
+        if (sfxSlider) sfxSlider.value = 0;
     }
 
     /**
@@ -75,5 +84,6 @@ class StartScreen {
             icon.src = 'assets/img/10_icons/soundOffIcon.png';
             StartScreen.music.volume = 0;
         }
+        ActionIcons.savePreferences();
     }
 }

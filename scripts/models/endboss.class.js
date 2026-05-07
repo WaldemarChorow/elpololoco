@@ -283,7 +283,9 @@ class Endboss extends MovableObject {
      */
     onDeathComplete() {
         AudioManager.stopBossMusic();
-        new Audio('assets/sounds/game/winMusic.mp3').play().catch(() => {});
+        if (!ActionIcons.muted) {
+            new Audio('assets/sounds/game/winMusic.mp3').play().catch(() => {});
+        }
         setTimeout(() => {
             window.gamePaused = true;
             if (world) world.paused = true;

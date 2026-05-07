@@ -37,17 +37,32 @@ class World{
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.level = level;
-        this.soundCoin = AudioManager.create('assets/sounds/collectibles/collectSound.wav');
-        this.soundBottleCollect = AudioManager.create('assets/sounds/collectibles/bottleCollectSound.wav');
-        this.soundBossHit = AudioManager.create('assets/sounds/chicken/chickenDead2.mp3');
-        this.enemies = level.enemies;
-        this.clouds = level.clouds;
-        this.layers = level.layers;
-        this.background = level.background;
+        this.loadWorldSounds();
+        this.assignLevelData(level);
         this.draw();
         this.setWorld();
         this.checkCollisions();
         this.run();
+    }
+
+    /**
+     * Creates the audio instances used directly by the world (coins, bottles, boss hit).
+     */
+    loadWorldSounds() {
+        this.soundCoin = AudioManager.create('assets/sounds/collectibles/collectSound.wav');
+        this.soundBottleCollect = AudioManager.create('assets/sounds/collectibles/bottleCollectSound.wav');
+        this.soundBossHit = AudioManager.create('assets/sounds/chicken/chickenDead2.mp3');
+    }
+
+    /**
+     * Caches level entity arrays directly on the world instance for quick access.
+     * @param {Level} level - The current level providing entities.
+     */
+    assignLevelData(level) {
+        this.enemies = level.enemies;
+        this.clouds = level.clouds;
+        this.layers = level.layers;
+        this.background = level.background;
     }
 
     /**
@@ -159,15 +174,26 @@ class World{
             enemy.die();
             this.character.speedY = 15;
         } else if (enemy instanceof Endboss) {
-            if (!this.character.isHurt()) { this.soundBossHit.currentTime = 0; this.soundBossHit.play().catch(() => {}); }
-            const damage = enemy.getPhase() === 2 ? 25 : 15;
-            this.character.hit(damage);
-            this.statusBar.setHealth(this.character.energy);
-            enemy.knockback();
+            this.handleEndbossHit(enemy);
         } else {
             this.character.hit(10);
             this.statusBar.setHealth(this.character.energy);
         }
+    }
+
+    /**
+     * Applies endboss contact damage, knockback and the boss hit sound.
+     * @param {Endboss} enemy - The endboss the character collided with.
+     */
+    handleEndbossHit(enemy) {
+        if (!this.character.isHurt()) {
+            this.soundBossHit.currentTime = 0;
+            this.soundBossHit.play().catch(() => {});
+        }
+        const damage = enemy.getPhase() === 2 ? 25 : 15;
+        this.character.hit(damage);
+        this.statusBar.setHealth(this.character.energy);
+        enemy.knockback();
     }
 
     /**
@@ -254,7 +280,9 @@ class World{
         if (!this.character.isDead() || this.gameOverTriggered) return;
         this.gameOverTriggered = true;
         AudioManager.mute();
-        new Audio('assets/sounds/game/gameOver.mp3').play().catch(() => {});
+        if (!ActionIcons.muted) {
+            new Audio('assets/sounds/game/gameOver.mp3').play().catch(() => {});
+        }
         setTimeout(() => {
             this.gameOverShown = true;
             document.getElementById('game-toolbar').style.display = 'none';

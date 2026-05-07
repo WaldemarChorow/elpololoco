@@ -84,22 +84,24 @@ class ThrowableObject extends MovableObject {
      * Starts the animation loop that handles the flying rotation and splash animation states.
      */
     animate() {
-        this.animateInterval = setInterval(() => {
-            if (this.state === 'flying') {
-                if (this.y >= this.GROUND_Y) {
-                    this.splash();
-                } else {
-                    this.playAnimation(this.IMAGES_ROTATING);
-                }
-            } else if (this.state === 'splashing') {
-                if (this.currentImage >= this.splashStartFrame + this.IMAGES_SPLASH.length) {
-                    this.state = 'done';
-                    clearInterval(this.animateInterval);
-                } else {
-                    this.playAnimation(this.IMAGES_SPLASH);
-                }
+        this.animateInterval = setInterval(() => this.animateFrame(), 1000 / 12);
+    }
+
+    /**
+     * Advances flying or splashing animation by one frame.
+     */
+    animateFrame() {
+        if (this.state === 'flying') {
+            if (this.y >= this.GROUND_Y) this.splash();
+            else this.playAnimation(this.IMAGES_ROTATING);
+        } else if (this.state === 'splashing') {
+            if (this.currentImage >= this.splashStartFrame + this.IMAGES_SPLASH.length) {
+                this.state = 'done';
+                clearInterval(this.animateInterval);
+            } else {
+                this.playAnimation(this.IMAGES_SPLASH);
             }
-        }, 1000 / 12);
+        }
     }
 
     /**

@@ -16,8 +16,8 @@ class Character extends MovableObject {
     /** @type {{top: number, left: number, right: number, bottom: number}} */
     offset = {
         top: 150,
-        left: 50,
-        right: 50,
+        left: 20,
+        right: 20,
         bottom: 30
     };
 
@@ -98,7 +98,7 @@ class Character extends MovableObject {
     /** @type {number} */
     DEAD_SPEED   = 150;
     /** @type {number} */
-    IDLE_SPEED   = 1000;
+    IDLE_SPEED   = 400;
 
     /** @type {World} */
     world;
@@ -125,20 +125,34 @@ class Character extends MovableObject {
      * Creates a new Character instance, loads all animation images and sounds, and starts animation loops.
      */
     constructor() {
-            super().loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
-            this.soundRun    = AudioManager.create('assets/sounds/character/characterRun.mp3',    0.2);
-            this.soundJump   = AudioManager.create('assets/sounds/character/characterJump.mp3',   0.1);
-            this.soundDamage = AudioManager.create('assets/sounds/character/characterDamage.mp3', 0.5);
-            this.soundDead   = AudioManager.create('assets/sounds/character/characterDead.wav',   0.5);
-            this.soundSnoring= AudioManager.create('assets/sounds/character/characterSnoring.mp3',0.3);
-            this.loadImages(this.IMAGES_WALKING);
-            this.loadImages(this.IMAGES_JUMPING);
-            this.loadImages(this.IMAGES_HURTS);
-            this.loadImages(this.IMAGES_DEAD);
-            this.loadImages(this.IMAGES_IDLE_SHORT);
-            this.loadImages(this.IMAGE_IDLE_LONG);
-            this.applyGravity();
-            this.animate();
+        super().loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
+        this.loadAllSounds();
+        this.loadAllImages();
+        this.applyGravity();
+        this.animate();
+    }
+
+    /**
+     * Loads all character-related sound effects.
+     */
+    loadAllSounds() {
+        this.soundRun    = AudioManager.create('assets/sounds/character/characterRun.mp3',    0.2);
+        this.soundJump   = AudioManager.create('assets/sounds/character/characterJump.mp3',   0.1);
+        this.soundDamage = AudioManager.create('assets/sounds/character/characterDamage.mp3', 0.5);
+        this.soundDead   = AudioManager.create('assets/sounds/character/characterDead.wav',   0.5);
+        this.soundSnoring= AudioManager.create('assets/sounds/character/characterSnoring.mp3',0.3);
+    }
+
+    /**
+     * Loads all character animation image sets into the image cache.
+     */
+    loadAllImages() {
+        this.loadImages(this.IMAGES_WALKING);
+        this.loadImages(this.IMAGES_JUMPING);
+        this.loadImages(this.IMAGES_HURTS);
+        this.loadImages(this.IMAGES_DEAD);
+        this.loadImages(this.IMAGES_IDLE_SHORT);
+        this.loadImages(this.IMAGE_IDLE_LONG);
     }
 
     /**
@@ -160,19 +174,33 @@ class Character extends MovableObject {
     runMovementLoop() {
         if (this.world && this.world.paused) return;
         if (this.isDead()) { this.soundRun.pause(); this.updateCamera(); return; }
+        this.handleHorizontalInput();
+        this.handleJumpInput();
+        this.updateRunSound();
+        this.updateCamera();
+    }
+
+    /**
+     * Reads LEFT/RIGHT keys and moves the character horizontally.
+     */
+    handleHorizontalInput() {
         if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
             this.moveRight(); this.otherDirection = false; this.lastMove = new Date().getTime();
         }
         if (this.world.keyboard.LEFT && this.x > 0) {
             this.moveLeft(); this.otherDirection = true; this.lastMove = new Date().getTime();
         }
-        this.handleJumpInput();
+    }
+
+    /**
+     * Plays or pauses the running sound based on movement keys.
+     */
+    updateRunSound() {
         if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
             this.soundRun.play();
         } else {
             this.soundRun.pause();
         }
-        this.updateCamera();
     }
 
     /**
@@ -200,15 +228,22 @@ class Character extends MovableObject {
         if (!this.isDead() && !this.isHurt() && aboveGround) {
             this.playJumpFrame();
         } else if (!this.isDead() && !this.isHurt() && !aboveGround) {
-            if (this.wasAboveGround) {
-                this.jumpFrame = 0;
-                this.jumpAnimationDone = false;
-            }
-            if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                this.playAnimation(this.IMAGES_WALKING);
-            }
+            this.handleGroundedAnim();
         }
         this.wasAboveGround = aboveGround;
+    }
+
+    /**
+     * Resets the jump frame after landing and plays walking animation if moving.
+     */
+    handleGroundedAnim() {
+        if (this.wasAboveGround) {
+            this.jumpFrame = 0;
+            this.jumpAnimationDone = false;
+        }
+        if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+            this.playAnimation(this.IMAGES_WALKING);
+        }
     }
 
     /**
@@ -230,19 +265,23 @@ class Character extends MovableObject {
     runHurtAnimLoop() {
         if (this.world && this.world.paused) return;
         const hurt = this.isHurt();
-        if (!this.isDead() && hurt) {
-            if (!this.wasHurt) { this.hurtFrame = 0; this.hurtAnimationDone = false; this.soundDamage.play(); }
-            if (!this.hurtAnimationDone) {
-                this.img = this.imageCache[this.IMAGES_HURTS[this.hurtFrame]];
-                if (this.hurtFrame < this.IMAGES_HURTS.length - 1) {
-                    this.hurtFrame++;
-                } else {
-                    this.hurtAnimationDone = true;
-                    this.img = this.imageCache['assets/img/2_character_pepe/1_idle/idle/I-1.png'];
-                }
-            }
-        }
+        if (!this.isDead() && hurt) this.advanceHurtAnimation();
         this.wasHurt = hurt;
+    }
+
+    /**
+     * Advances the hurt animation frame and triggers the damage sound on entry.
+     */
+    advanceHurtAnimation() {
+        if (!this.wasHurt) { this.hurtFrame = 0; this.hurtAnimationDone = false; this.soundDamage.play(); }
+        if (this.hurtAnimationDone) return;
+        this.img = this.imageCache[this.IMAGES_HURTS[this.hurtFrame]];
+        if (this.hurtFrame < this.IMAGES_HURTS.length - 1) {
+            this.hurtFrame++;
+        } else {
+            this.hurtAnimationDone = true;
+            this.img = this.imageCache['assets/img/2_character_pepe/1_idle/idle/I-1.png'];
+        }
     }
 
     /**
@@ -251,18 +290,24 @@ class Character extends MovableObject {
     runDeadAnimLoop() {
         if (this.world && this.world.paused) return;
         if (this.isDead()) {
-            if (!this.deadAnimationDone) {
-                this.soundDead.play();
-                this.img = this.imageCache[this.IMAGES_DEAD[this.deadFrame]];
-                if (this.deadFrame < this.IMAGES_DEAD.length - 1) {
-                    this.deadFrame++;
-                } else {
-                    this.deadAnimationDone = true;
-                }
-            }
+            this.advanceDeadAnimation();
         } else {
             this.deadFrame = 0;
             this.deadAnimationDone = false;
+        }
+    }
+
+    /**
+     * Advances the dead animation frame by frame and plays the death sound.
+     */
+    advanceDeadAnimation() {
+        if (this.deadAnimationDone) return;
+        this.soundDead.play();
+        this.img = this.imageCache[this.IMAGES_DEAD[this.deadFrame]];
+        if (this.deadFrame < this.IMAGES_DEAD.length - 1) {
+            this.deadFrame++;
+        } else {
+            this.deadAnimationDone = true;
         }
     }
 
@@ -274,15 +319,22 @@ class Character extends MovableObject {
         const isStanding = !this.isDead() && !this.isHurt() && !this.isAboveGround()
             && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT;
         if (isStanding) {
-            if (this.isIdleLong()) {
-                this.soundSnoring.play().catch(() => {});
-                this.playAnimation(this.IMAGE_IDLE_LONG);
-            } else {
-                this.soundSnoring.pause();
-                this.playAnimation(this.IMAGES_IDLE_SHORT);
-            }
+            this.playIdleAnimation();
         } else {
             this.soundSnoring.pause();
+        }
+    }
+
+    /**
+     * Picks the short or long idle animation based on idle duration.
+     */
+    playIdleAnimation() {
+        if (this.isIdleLong()) {
+            this.soundSnoring.play().catch(() => {});
+            this.playAnimation(this.IMAGE_IDLE_LONG);
+        } else {
+            this.soundSnoring.pause();
+            this.playAnimation(this.IMAGES_IDLE_SHORT);
         }
     }
 

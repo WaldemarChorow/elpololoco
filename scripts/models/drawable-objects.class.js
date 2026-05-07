@@ -46,8 +46,6 @@ class DrawableObjects {
     draw(ctx) {
         if (this.img) {
             ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-        } else {
-            console.log('img undefined for', this.constructor.name, this);
         }
     }
 }

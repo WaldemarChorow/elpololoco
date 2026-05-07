@@ -1,3 +1,7 @@
+/**
+ * Builds the parallax layer groups for the level background.
+ * @returns {Layer[]} - Array of layer instances spanning the level width.
+ */
 function createLayers() {
     const layerGroups = [
         ['assets/img/5_background/layers/3_third_layer/1.png',
@@ -18,6 +22,10 @@ function createLayers() {
     return layers;
 }
 
+/**
+ * Creates the air background tiles repeating along the level width.
+ * @returns {Background[]} - Array of background tile instances.
+ */
 function createBackground() {
     const background = [];
     for (let i = -2; i < 9; i++) {
@@ -26,6 +34,10 @@ function createBackground() {
     return background;
 }
 
+/**
+ * Creates randomly positioned cloud objects across the level width.
+ * @returns {Cloud[]} - Array of cloud instances.
+ */
 function createClouds() {
     const images = [
         'assets/img/5_background/layers/4_clouds/1.png',
@@ -43,6 +55,10 @@ function createClouds() {
     return clouds;
 }
 
+/**
+ * Creates the regular enemies and the endboss for the level.
+ * @returns {MovableObject[]} - Array of enemy instances including the endboss.
+ */
 function createEnemies() {
     const types  = [
         Chicken, ChickenSmall, Chicken,
@@ -55,21 +71,23 @@ function createEnemies() {
     const count      = types.length;
     const slot       = (levelEnd - levelStart) / count;
     const enemies    = [];
-
     types.forEach((Type, i) => {
         const x = levelStart + i * slot + Math.random() * (slot * 0.5);
         enemies.push(new Type(Math.round(x)));
     });
-
     enemies.push(new Endboss());
     return enemies;
 }
 
+/**
+ * Creates the collectible coins at preset positions across the level.
+ * @returns {Coin[]} - Array of coin instances.
+ */
 function createCoins() {
     const coins = [];
     const positions = [
-        [400, 100], [800, 150], [1200, 200], 
-        [1600, 50], [2000, 150], [2400, 200],  
+        [400, 100], [800, 150], [1200, 200],
+        [1600, 50], [2000, 150], [2400, 200],
         [3000, 150], [3500, 200], [4000, 100],
         [4400, 50], [4800, 200], [5200, 150],
     ];
@@ -77,6 +95,10 @@ function createCoins() {
     return coins;
 }
 
+/**
+ * Creates the collectible bottles at preset positions across the level.
+ * @returns {Bottle[]} - Array of bottle instances.
+ */
 function createBottles() {
     const bottles = [];
     const positions = [
@@ -89,6 +111,10 @@ function createBottles() {
     return bottles;
 }
 
+/**
+ * Creates a fresh Level instance with all enemies, coins, bottles, clouds, layers and background.
+ * @returns {Level} - The fully assembled level.
+ */
 function createLevel1() {
     return new Level(
         createEnemies(),

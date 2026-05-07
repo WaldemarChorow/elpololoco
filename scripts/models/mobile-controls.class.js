@@ -13,7 +13,10 @@ class MobileControls {
      * @returns {boolean} - True if the device supports touch input.
      */
     static isTouchDevice() {
-        return window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+        return window.matchMedia('(pointer: coarse)').matches
+            || 'ontouchstart' in window
+            || navigator.maxTouchPoints > 0
+            || Math.min(window.innerWidth, window.innerHeight) <= 1100;
     }
 
     /**
@@ -37,38 +40,62 @@ class MobileControls {
      * Updates the visibility of the rotate overlay and mobile controls based on orientation and game state.
      */
     static update() {
-        const rotateOverlay = document.getElementById('rotate-overlay');
-        const mobileControls = document.getElementById('mobile-controls');
         const isMobile = MobileControls.isTouchDevice();
         const isPortrait = MobileControls.isPortrait();
         const gameRunning = typeof world !== 'undefined' && world;
-        if (isMobile && isPortrait) {
-            if (MobileControls.pendingStart || gameRunning) {
-                rotateOverlay.classList.add('visible');
-            }
-            if (gameRunning && !world.paused) {
+        if (isMobile && isPortrait) MobileControls.applyPortrait(gameRunning);
+        else MobileControls.applyLandscape(isMobile, gameRunning);
+    }
+
+    /**
+     * Configures the UI for portrait orientation on touch devices.
+     * @param {World|null} gameRunning - Active world or falsy if no game is running.
+     */
+    static applyPortrait(gameRunning) {
+        const rotateOverlay = document.getElementById('rotate-overlay');
+        if (gameRunning) {
+            rotateOverlay.classList.add('visible');
+            if (!world.paused) {
                 world.paused = true;
                 MobileControls.wasPausedByOrientation = true;
             }
-            mobileControls.classList.remove('visible');
-            document.body.classList.remove('game-fullscreen');
         } else {
             rotateOverlay.classList.remove('visible');
-            if (isMobile && gameRunning) {
-                mobileControls.classList.add('visible');
-                document.body.classList.add('game-fullscreen');
-            } else {
-                mobileControls.classList.remove('visible');
-                document.body.classList.remove('game-fullscreen');
-            }
-            if (MobileControls.pendingStart) {
-                MobileControls.pendingStart = false;
-                if (typeof startGame === 'function') startGame();
-                MobileControls.update();
-            } else if (MobileControls.wasPausedByOrientation && gameRunning) {
-                world.paused = false;
-                MobileControls.wasPausedByOrientation = false;
-            }
+        }
+        document.getElementById('mobile-controls').classList.remove('visible');
+        document.body.classList.remove('game-fullscreen');
+    }
+
+    /**
+     * Configures the UI for landscape orientation and resumes pending state.
+     * @param {boolean} isMobile - True if running on a touch device.
+     * @param {World|null} gameRunning - Active world or falsy if no game is running.
+     */
+    static applyLandscape(isMobile, gameRunning) {
+        document.getElementById('rotate-overlay').classList.remove('visible');
+        const mobileControls = document.getElementById('mobile-controls');
+        if (isMobile && gameRunning) {
+            mobileControls.classList.add('visible');
+            document.body.classList.add('game-fullscreen');
+        } else {
+            mobileControls.classList.remove('visible');
+            document.body.classList.remove('game-fullscreen');
+        }
+        MobileControls.resumePendingState(gameRunning);
+    }
+
+    /**
+     * Triggers the pending game start or resumes a game paused by orientation change.
+     * @param {World|null} gameRunning - Active world or falsy if no game is running.
+     */
+    static resumePendingState(gameRunning) {
+        if (MobileControls.pendingStart) {
+            MobileControls.pendingStart = false;
+            if (typeof startGame === 'function') startGame();
+            MobileControls.update();
+        } else if (MobileControls.wasPausedByOrientation && gameRunning) {
+            world.paused = false;
+            MobileControls.wasPausedByOrientation = false;
         }
     }
 

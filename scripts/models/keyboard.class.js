@@ -29,28 +29,23 @@ class Keyboard {
     }
 
     /**
+     * Maps a keyboard event key to the corresponding flag name.
+     * @param {string} key - The pressed key value.
+     * @returns {string|null} - Internal flag name or null if unhandled.
+     */
+    static mapKey(key) {
+        const map = { 'ArrowLeft': 'LEFT', 'ArrowRight': 'RIGHT', 'ArrowUp': 'UP',
+            'ArrowDown': 'DOWN', ' ': 'SPACE', 'd': 'D', 'D': 'D' };
+        return map[key] ?? null;
+    }
+
+    /**
      * Sets the corresponding key state to true when a key is pressed.
      * @param {KeyboardEvent} e - The keydown event.
      */
     KEYDOWN(e) {
-        if (e.key === 'ArrowLeft') {
-            this.LEFT = true;
-        }
-        if (e.key === 'ArrowRight') {
-            this.RIGHT = true;
-        }
-        if (e.key === 'ArrowUp') {
-            this.UP = true;
-        }
-        if (e.key === 'ArrowDown') {
-            this.DOWN = true;
-        }
-        if (e.key === ' ') {
-            this.SPACE = true;
-        }
-        if (e.key === 'd' || e.key === 'D') {
-            this.D = true;
-        }
+        const flag = Keyboard.mapKey(e.key);
+        if (flag) this[flag] = true;
     }
 
     /**
@@ -58,23 +53,7 @@ class Keyboard {
      * @param {KeyboardEvent} e - The keyup event.
      */
     KEYUP(e) {
-        if (e.key === 'ArrowLeft') {
-            this.LEFT = false;
-        }
-        if (e.key === 'ArrowRight') {
-            this.RIGHT = false;
-        }
-        if (e.key === 'ArrowUp') {
-            this.UP = false;
-        }
-        if (e.key === 'ArrowDown') {
-            this.DOWN = false;
-        }
-        if (e.key === ' ') {
-            this.SPACE = false;
-        }
-        if (e.key === 'd' || e.key === 'D') {
-            this.D = false;
-        }
+        const flag = Keyboard.mapKey(e.key);
+        if (flag) this[flag] = false;
     }
 }

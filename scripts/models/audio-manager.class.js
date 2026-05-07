@@ -80,7 +80,9 @@ class AudioManager {
      */
     static create(src, volume = null) {
         const audio = new Audio(src);
-        audio.volume = volume !== null ? volume : AudioManager.volume;
+        const baseVolume = volume !== null ? volume : AudioManager.volume;
+        const muted = typeof ActionIcons !== 'undefined' && ActionIcons.muted;
+        audio.volume = muted ? 0 : baseVolume;
         audio._customVolume = volume !== null ? volume : null;
         AudioManager.sounds.push(audio);
         return audio;
