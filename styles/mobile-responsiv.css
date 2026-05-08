@@ -12,7 +12,7 @@ canvas {
 }
 
 /* === Tablet & smaller (portrait): responsive start screen === */
-@media only screen and (max-width: 1024px) and (orientation: portrait) {
+@media only screen and (max-width: 500px) and (orientation: portrait) {
     h1 {
         font-size: 36px;
         margin-top: 12px;
@@ -32,7 +32,7 @@ canvas {
         aspect-ratio: 720 / 480;
     }
     #start-screen-buttons {
-        top: 12px;
+        top: -10px;
     }
     #start-screen-buttons button {
         padding: 10px 14px;
@@ -42,7 +42,9 @@ canvas {
         height: 56px;
     }
     #start-screen-buttons span {
-        font-size: 12px;
+        font-size: 16px;
+        position: absolute;
+        top:55px;
     }
 }
 
@@ -62,14 +64,16 @@ canvas {
         gap: 20px;
     }
     #start-screen-buttons button {
-        padding: 10px 14px;
+        padding: 0px 14px;
     }
     #start-screen-buttons img {
         width: 72px;
         height: 72px;
     }
     #start-screen-buttons span {
-        font-size: 15px;
+        font-size: 25px;
+        position: absolute;
+        top: 58px
     }
 }
 
@@ -83,7 +87,7 @@ canvas {
         height: 36px;
     }
     h1 {
-        font-size: 20px;
+        font-size: 60px;
         margin: 2px 0;
     }
     #canvas-wrapper {
@@ -170,7 +174,7 @@ body.game-fullscreen #game-toolbar {
     pointer-events: none;
 }
 body.game-fullscreen #action-icons-left {
-    gap: 25px;
+    gap: 20px;
     pointer-events: auto;
     display: flex;
     flex-direction: row;

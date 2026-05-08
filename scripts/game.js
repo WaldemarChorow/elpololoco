@@ -193,8 +193,10 @@ window.addEventListener('keydown', (e) => {
         e.preventDefault();
         document.activeElement.blur();
     }
-    keyboard.KEYDOWN(e);
-    startAudioOnInteraction();
+    if (world) {
+        keyboard.KEYDOWN(e);
+        startAudioOnInteraction();
+    }
 });
 
 window.addEventListener('click', () => {

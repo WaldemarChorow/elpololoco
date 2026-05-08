@@ -128,12 +128,15 @@ class World{
         this.level.enemies.forEach((enemy) => {
             if (obj.state !== 'flying' || !obj.isColliding(enemy)) return;
             obj.splash();
+            const energyBefore = enemy.energy;
             enemy.hit();
             if (enemy instanceof Endboss) {
-                this.soundBossHit.currentTime = 0;
-                this.soundBossHit.play().catch(() => {});
-                enemy.triggerHurt();
-                this.bossHealthBar.setHealth(enemy.energy * 2);
+                if (enemy.energy < energyBefore) {
+                    this.soundBossHit.currentTime = 0;
+                    this.soundBossHit.play().catch(() => {});
+                    enemy.triggerHurt();
+                    this.bossHealthBar.setHealth(enemy.energy * 2);
+                }
             }
             if (enemy.isDead() && enemy.die) enemy.die();
         });

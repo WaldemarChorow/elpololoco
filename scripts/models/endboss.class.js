@@ -71,9 +71,9 @@ class Endboss extends MovableObject {
     };
 
     /** @type {number} */
-    ALERT_DURATION      = 1000;
+    ALERT_DURATION      = 500;
     /** @type {number} */
-    INTRO_HURT_DURATION = 2000;
+    INTRO_HURT_DURATION = 0;
     /** @type {number} */
     HURT_DURATION       = 1000;
     /** @type {number} */
@@ -119,6 +119,7 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.x = 6000;
         this.currentState = 'waiting';
+        this.isIntro = false;
     }
 
     /**
@@ -126,23 +127,23 @@ class Endboss extends MovableObject {
      */
     appear() {
         this.visible = true;
+        this.isIntro = true;
         this.currentState = 'alert';
         this.currentImage = 0;
         this.runSequence();
     }
 
     /**
-     * Runs the intro sequence: alert phase, then hurt phase, then transitions to walking and starts loops.
+     * Runs the intro sequence: short alert phase, then transitions to walking, starts loops, and triggers an immediate charge.
      */
     runSequence() {
         this.currentState = 'alert';
         setTimeout(() => {
-            this.currentState = 'hurt';
-            setTimeout(() => {
-                this.currentState = 'walking';
-                this.applyGravity();
-                this.startLoops();
-            }, this.INTRO_HURT_DURATION);
+            this.currentState = 'walking';
+            this.isIntro = false;
+            this.applyGravity();
+            this.startLoops();
+            this.triggerDash();
         }, this.ALERT_DURATION);
     }
 
@@ -259,6 +260,9 @@ class Endboss extends MovableObject {
      * Reduces boss energy by 10 and records the time of the hit.
      */
     hit() {
+        if (this.isIntro || this.currentState === 'waiting') return;
+        if (this.currentState === 'dashing' || this.currentState === 'jumping') return;
+        if (this.currentState === 'hurt' || this.isKnockedBack) return;
         this.energy = Math.max(0, this.energy - 10);
         this.lastHit = new Date().getTime();
     }
